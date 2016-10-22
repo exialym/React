@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>React Test</title>
+  </head>
+  <body>
+    <div id="render1"></div>
+    <div id="render2"></div>
+    <div id="render3"></div>
+    <div id="cookBook1"></div>
+    <div id="cookBook2"></div>
+    <div id="cookBook3"></div>
+    <div id="signUp"></div>
+    <div id="contactUs"></div>
+    <div id="Timer"></div>
+    <div id="list"></div>
+    <script src="build/jquery.min.js"></script>
+    <script src="build/react.js"></script>
+    <script src="build/react-dom.js"></script>
+    <script src="build/browser.min.js"></script>
+    <script type="text/babel">
+      /*****************************************ReactDOM.render************/
+      ReactDOM.render(
+        <h1>Hello, everyone!</h1>,
+        document.getElementById('render1')
+      );
+
+      /*****************************************JSX************/
+      var names = ['Rabbit', 'and', 'Lion'];
+      ReactDOM.render(
+        <div>
+          <div>This is {
+            names.reduce((a,b)=>a+' '+b,'')
+          }!</div>
+        </div>,
+        document.getElementById('render2')
+      );
+
+      var food = [
+        <span key='carrot'>福萝卜 </span>,
+        <span key='beef'>牛肉 </span>,
+      ];
+      ReactDOM.render(
+        <div>We like to eat:{food}</div>,
+        document.getElementById('render3')
+      );
+      /*****************************************this.state************/
+
+      var LikeButton = React.createClass({
+        //设置初始状态，是一个对象
+        getInitialState: function() {
+          return {liked: false};
+        },
+        handleClick: function(event) {
+          //变更状态
+          //只要状态变更，就会调用this.render再次渲染
+          //至于是否真的会刷新Dom节点，就要看React使用Dom diff算法的结果了
+          this.setState({liked: !this.state.liked});
+        },
+        render: function() {
+          //根据状态渲染节点
+          var text = this.state.liked ? 'like' : 'haven\'t liked';
+          var antiText = this.state.liked ? 'dislike' : 'like';
+          return (
+                  <p onClick={this.handleClick}>
+                    You {text} this. Click to {antiText}.
+                  </p>
+          );
+        }
+      });
+      /*****************************************组件************/
+      /*****************************************this.props.children************/
+      //组件类的第一个字母必须大写，否则会报错
+      var CookBook = React.createClass({
+        //组件类的这个属性就是用来验证组件实例的属性是否符合要求
+        propTypes: {
+          //这里要求name属性是必须的，且必须为字符串
+          name: React.PropTypes.string.isRequired,
+        },
+        //设置默认属性
+        getDefaultProps : function () {
+          return {
+            time : '约1小时'
+          };
+        },
+        render: function() {
+          //组件类只能包含一个顶层标签，否则也会报错
+          //这里使用一个div作为顶层标签
+          //class要写为className，for写为htmlFor，因为JS关键字的原因
+          //这里嵌套了一个之前定义的组件
+          return <div className="CookBookItem">
+            <h1>{this.props.name}</h1>
+            <div>所需时间:{this.props.time}</div>
+            <div>所需食材：{this.props.foods}</div>
+            <ol>
+              {
+                React.Children.map(this.props.children, function (child) {
+                  return <li>{child}</li>;
+                })
+              }
+            </ol>
+            <LikeButton />
+          </div>;
+        }
+
+      });
+      var foods = [
+        <span key='tomato'>西红柿、</span>,
+        <span key='beef'>牛肉</span>,
+      ];
+      var stepsArr = [
+        <div key='wash'>洗菜</div>,
+        <div key='cutve'>切菜</div>,
+        <div key='cutmeet'>切肉</div>,
+        <div key='cook'>炖</div>,
+      ];
+      ReactDOM.render(
+        //组件的参数通过HTML属性传进去，在里面使用this.props.xxx获取
+        <CookBook name="西红柿牛腩" time="约4个小时" foods={foods}>{stepsArr}</CookBook>,
+        document.getElementById('cookBook1')
+      );
+      foods = [
+        <span key='tomato'>青椒、</span>,
+        <span key='onion'>洋葱、</span>,
+        <span key='beef'>牛肉</span>,
+      ];
+      stepsArr = [
+        <div key='wash'>洗菜</div>,
+        <div key='cutve'>切菜</div>,
+        <div key='cutmeet'>切肉</div>,
+        <div key='cook'>炒</div>,
+      ];
+      ReactDOM.render(
+              //组件的参数通过HTML属性传进去，在里面使用this.props.xxx获取
+              <CookBook name="黑椒牛柳" time="约2个小时" foods={foods}>{stepsArr}</CookBook>,
+              document.getElementById('cookBook2')
+      );
+      /*ReactDOM.render(
+        //name是必须的，所以这里会报错
+        <CookBook></CookBook>,
+        document.getElementById('cookBook2')
+      );
+      ReactDOM.render(
+        //name需要是字符串，所以这里会报错
+        <CookBook name={123} ></CookBook>,
+        document.getElementById('cookBook3')
+      );*/
+      /*****************************************获取真实的DOM节点************/
+      var Login = React.createClass({
+        //处理点击事件
+        //React 组件支持很多事件，除了 Click 事件以外，还有 KeyDown 、Copy、Scroll 等
+        handleClick: function() {
+          //虚拟Dom是拿不到用户输入的，使用this.refs.xxx
+          //可以获取到真实的Dom节点
+          alert(this.refs.username.value)
+        },
+        render: function() {
+          return (
+                  <div>
+                    <h3>If You Are Our Friend, Sign In Please.</h3>
+                    <input type="text" ref="username" />
+                    <input type="password" ref="password" />
+                    <input type="button" value="Sign In" onClick={this.handleClick} />
+                  </div>
+          );
+        },
+        //在组件加载完成时调用
+        componentDidMount:function(){
+          //焦点放在username上
+          this.refs.username.focus();
+        }
+      });
+
+      ReactDOM.render(
+              <Login />,
+              document.getElementById('signUp')
+      );
+
+      /*********************************表单**********************************/
+      var ContactUs = React.createClass({
+        getInitialState: function() {
+          return {value: 'name@example.com'};
+        },
+        handleChange: function(event) {
+          //通过事件的target来获取到一个真实的Dom对象就能获取到值了
+          //本质上和使用ref是一样的，都是获得真实的Dom节点
+          this.setState({value: event.target.value});
+        },
+        render: function () {
+          var value = this.state.value;
+          return (
+            <div>
+              <h3>Leave Your Email</h3>
+              <input type="text" value={value} onChange={this.handleChange} />
+              <p>{value}</p>
+            </div>
+          );
+        }
+      })
+      ReactDOM.render(<ContactUs/>, document.getElementById('contactUs'));
+
+
+      /*****************************************组件的生命周期************/
+      var Timer = React.createClass({
+        getInitialState: function () {
+          return {
+            opacity: 1.0,
+            time:0,
+          };
+        },
+        //Dom一直在变，于是这个方法总是被调用
+        componentDidUpdate(prevProps, prevState) {
+            //console.log(prevState);
+        },
+        componentDidMount: function () {
+          this.timer = setInterval(function () {
+            var opacity = this.state.opacity;
+            var time = this.state.time;
+            time+=100;
+            opacity -= .05;
+            if (opacity < 0.1) {
+              opacity = 1.0;
+            }
+            this.setState({
+              opacity: opacity,
+              time:time,
+            });
+          }.bind(this), 100);
+        },
+
+        //每100ms重新渲染一次Dom这在以前是开销非常大的
+        //但是React的先创建虚拟Dom再更改必要的实际Dom使得这个操作变得非常轻量
+        //注意这里的style属性的设置方式
+        //React 组件样式是一个对象，所以第一重大括号表示这是 JavaScript 语法，第二重大括号表示样式对象。
+        render: function () {
+          return (
+            <div style={{opacity: this.state.opacity}}>
+              You have been here for {this.state.time/1000}s
+            </div>
+          );
+        }
+      });
+
+      ReactDOM.render(
+        <Timer/>,
+        document.getElementById('Timer')
+      );
+
+      /*****************************************应用AJAX************/
+      var RepoList = React.createClass({
+        //这个组件共有3种状态
+        getInitialState: function() {
+          return { loading: true, error: null, data: null};
+        },
+
+        componentDidMount() {
+          //这个组件会传进来一个promise对象
+          //在这个promise对象准备好之后会传进组件并触发这个方法
+          //设定完成和报错的方法
+          //这里在完成或失败之后改变组件的状态，重新渲染组件
+          this.props.promise.then(
+                  value => this.setState({loading: false, data: value}),
+                  error => this.setState({loading: false, error: error}));
+        },
+        //render方法根据组件的状态重新渲染组件
+        render: function() {
+          if (this.state.loading) {
+            return <span>Loading...</span>;
+          }
+          else if (this.state.error !== null) {
+            return <span>Error: {this.state.error.message}</span>;
+          }
+          else {
+            var repos = this.state.data.items;
+            var repoList = repos.map(function (repo) {
+              return (
+                      <li>
+                        <a href={repo.html_url}>{repo.name}</a> ({repo.stargazers_count} stars) <br/> {repo.description}
+                      </li>
+              );
+            });
+            return (
+                    <main>
+                      <h3>Most Popular JavaScript Projects in Github</h3>
+                      <ol>{repoList}</ol>
+                    </main>
+            );
+          }
+        }
+      });
+      ReactDOM.render(
+              <RepoList
+                      promise={$.getJSON('https://api.github.com/search/repositories?q=javascript&sort=stars')}
+              />,
+              document.getElementById('list')
+      );
+    </script>
+  </body>
+</html>
