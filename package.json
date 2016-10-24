@@ -1,0 +1,27 @@
+{
+  "name": "react",
+  "version": "1.0.0",
+  "description": "a test of React",
+  "main": "index.js",
+  "dependencies": {
+    "babel-preset-react": "^6.16.0",
+    "events": "^1.1.1",
+    "flux": "^3.1.0",
+    "object-assign": "^4.1.0",
+    "webpack": "^1.13.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/exialym/React.git"
+  },
+  "author": "exialym",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/exialym/React/issues"
+  },
+  "homepage": "https://github.com/exialym/React#readme"
+}
