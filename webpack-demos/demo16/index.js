@@ -10,9 +10,9 @@ var App = React.createClass({
       <div>
         <header>
           <ul>
-            <li><Link to="/app">Dashboard</Link></li>
-            <li><Link to="/inbox">Inbox</Link></li>
-            <li><Link to="/calendar">Calendar</Link></li>
+            <li><Link to="app">Dashboard</Link></li>
+            <li><Link to="inbox">Inbox</Link></li>
+            <li><Link to="calendar">Calendar</Link></li>
           </ul>
           Logged in as Jane
         </header>
