@@ -1,0 +1,53 @@
+*{
+  margin:0;
+  box-sizing: border-box;
+}
+#main{
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  header,footer{
+    flex: 0 0 0%;
+    padding:1em;
+    font: normal 30px "Monaco";
+    text-align: center;
+    background-color: #00539f;
+    color: #fff;
+    background-image: url(img/blueprint.png),
+        linear-gradient(to right,#00539f 50%, #005990 100%);
+
+  }
+  footer{
+    font-size: 12px;
+    background: #444444;
+    color: #fff;
+  }
+  .content{
+    flex:1;
+    display: flex;
+    .nav{
+      flex: 0 0 0%;
+      border-right: 1px dashed #666;
+      ul{
+        width:150px;
+        list-style: none;
+        padding:1em;
+        li{
+          padding:0.5em;
+        }
+        a{
+          text-decoration: none;
+          color:#666;
+
+          font-family: 'Open Sans';
+        }
+        a.active{
+          color:#00539f;
+        }
+      }
+    }
+  }
+}
+.active{
+  color:green;
+}
