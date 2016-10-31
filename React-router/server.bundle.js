@@ -46,37 +46,40 @@
 
 	/* WEBPACK VAR INJECTION */(function(__dirname) {'use strict';
 
-	var _react = __webpack_require__(1);
+	var _express = __webpack_require__(1);
+
+	var _express2 = _interopRequireDefault(_express);
+
+	var _path = __webpack_require__(2);
+
+	var _path2 = _interopRequireDefault(_path);
+
+	var _react = __webpack_require__(3);
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _server = __webpack_require__(2);
+	var _server = __webpack_require__(4);
 
-	var _reactRouter = __webpack_require__(3);
+	var _reactRouter = __webpack_require__(5);
 
-	var _routers = __webpack_require__(4);
+	var _routers = __webpack_require__(6);
 
 	var _routers2 = _interopRequireDefault(_routers);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	// server.js
-	var express = __webpack_require__(11);
-	var path = __webpack_require__(12);
-	// we'll use this to render our app to an html string
-
 	// and these to match the url to routes and then render
-
-
-	var app = express();
+	var app = (0, _express2.default)();
 
 	// serve our static stuff like index.css
-	app.use(express.static(__dirname));
-	app.use(express.static(path.join(__dirname, 'public')));
+
+	// we'll use this to render our app to an html string
+	app.use(_express2.default.static(_path2.default.join(__dirname, 'public')));
 
 	// send all requests to index.html so browserHistory in React Router works
 	app.get('*', function (req, res) {
 	    // match the routes to the url
+	    console.log("getting");
 	    (0, _reactRouter.match)({ routes: _routers2.default, location: req.url }, function (err, redirect, props) {
 	        // in here we can make some decisions all at once
 	        if (err) {
@@ -97,6 +100,7 @@
 	            // dump the HTML into a template, lots of ways to do this, but none are
 	            // really influenced by React Router, so we're just using a little
 	            // function, `renderPage`
+	            //console.log(renderPage(appHtml));
 	            res.send(renderPage(appHtml));
 	        } else {
 	            // no errors, no redirect, we just didn't match anything
@@ -109,6 +113,7 @@
 	}
 
 	var PORT = process.env.PORT || 8080;
+	console.log("working");
 	app.listen(PORT, function () {
 	    console.log('Production Express server running at localhost:' + PORT);
 	});
@@ -118,49 +123,61 @@
 /* 1 */
 /***/ function(module, exports) {
 
-	module.exports = require("react");
+	module.exports = require("express");
 
 /***/ },
 /* 2 */
 /***/ function(module, exports) {
 
-	module.exports = require("react-dom/server");
+	module.exports = require("path");
 
 /***/ },
 /* 3 */
 /***/ function(module, exports) {
 
-	module.exports = require("react-router");
+	module.exports = require("react");
 
 /***/ },
 /* 4 */
+/***/ function(module, exports) {
+
+	module.exports = require("react-dom/server");
+
+/***/ },
+/* 5 */
+/***/ function(module, exports) {
+
+	module.exports = require("react-router");
+
+/***/ },
+/* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var _react = __webpack_require__(1);
+	var _react = __webpack_require__(3);
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _reactRouter = __webpack_require__(3);
+	var _reactRouter = __webpack_require__(5);
 
-	var _App = __webpack_require__(5);
+	var _App = __webpack_require__(7);
 
 	var _App2 = _interopRequireDefault(_App);
 
-	var _About = __webpack_require__(8);
+	var _About = __webpack_require__(10);
 
 	var _About2 = _interopRequireDefault(_About);
 
-	var _Repos = __webpack_require__(9);
+	var _Repos = __webpack_require__(11);
 
 	var _Repos2 = _interopRequireDefault(_Repos);
 
-	var _Repo = __webpack_require__(10);
+	var _Repo = __webpack_require__(12);
 
 	var _Repo2 = _interopRequireDefault(_Repo);
 
-	var _Home = __webpack_require__(7);
+	var _Home = __webpack_require__(9);
 
 	var _Home2 = _interopRequireDefault(_Home);
 
@@ -183,7 +200,7 @@
 	);
 
 /***/ },
-/* 5 */
+/* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -192,15 +209,15 @@
 	  value: true
 	});
 
-	var _react = __webpack_require__(1);
+	var _react = __webpack_require__(3);
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _NavLink = __webpack_require__(6);
+	var _NavLink = __webpack_require__(8);
 
 	var _NavLink2 = _interopRequireDefault(_NavLink);
 
-	var _Home = __webpack_require__(7);
+	var _Home = __webpack_require__(9);
 
 	var _Home2 = _interopRequireDefault(_Home);
 
@@ -280,7 +297,7 @@
 	});
 
 /***/ },
-/* 6 */
+/* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -291,11 +308,11 @@
 
 	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-	var _react = __webpack_require__(1);
+	var _react = __webpack_require__(3);
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _reactRouter = __webpack_require__(3);
+	var _reactRouter = __webpack_require__(5);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -307,7 +324,7 @@
 	});
 
 /***/ },
-/* 7 */
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -316,7 +333,7 @@
 		value: true
 	});
 
-	var _react = __webpack_require__(1);
+	var _react = __webpack_require__(3);
 
 	var _react2 = _interopRequireDefault(_react);
 
@@ -334,7 +351,7 @@
 	});
 
 /***/ },
-/* 8 */
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -343,7 +360,7 @@
 		value: true
 	});
 
-	var _react = __webpack_require__(1);
+	var _react = __webpack_require__(3);
 
 	var _react2 = _interopRequireDefault(_react);
 
@@ -361,7 +378,7 @@
 	});
 
 /***/ },
-/* 9 */
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -370,15 +387,15 @@
 	  value: true
 	});
 
-	var _react = __webpack_require__(1);
+	var _react = __webpack_require__(3);
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _NavLink = __webpack_require__(6);
+	var _NavLink = __webpack_require__(8);
 
 	var _NavLink2 = _interopRequireDefault(_NavLink);
 
-	var _reactRouter = __webpack_require__(3);
+	var _reactRouter = __webpack_require__(5);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -447,7 +464,7 @@
 	});
 
 /***/ },
-/* 10 */
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -456,7 +473,7 @@
 	  value: true
 	});
 
-	var _react = __webpack_require__(1);
+	var _react = __webpack_require__(3);
 
 	var _react2 = _interopRequireDefault(_react);
 
@@ -483,18 +500,6 @@
 	    );
 	  }
 	});
-
-/***/ },
-/* 11 */
-/***/ function(module, exports) {
-
-	module.exports = require("express");
-
-/***/ },
-/* 12 */
-/***/ function(module, exports) {
-
-	module.exports = require("path");
 
 /***/ }
 /******/ ]);

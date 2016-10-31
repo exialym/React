@@ -1,6 +1,5 @@
-// server.js
-var express = require('express')
-var path = require('path')
+import express from 'express'
+import path from 'path'
 import React from 'react'
 // we'll use this to render our app to an html string
 import { renderToString } from 'react-dom/server'
@@ -11,12 +10,12 @@ import routes from './modules/routers'
 var app = express()
 
 // serve our static stuff like index.css
-app.use(express.static(__dirname))
 app.use(express.static(path.join(__dirname, 'public')))
 
 // send all requests to index.html so browserHistory in React Router works
 app.get('*', function (req, res) {
     // match the routes to the url
+    console.log("getting");
     match({ routes: routes, location: req.url }, (err, redirect, props) => {
         // in here we can make some decisions all at once
         if (err) {
@@ -37,6 +36,7 @@ app.get('*', function (req, res) {
             // dump the HTML into a template, lots of ways to do this, but none are
             // really influenced by React Router, so we're just using a little
             // function, `renderPage`
+            //console.log(renderPage(appHtml));
             res.send(renderPage(appHtml))
         } else {
             // no errors, no redirect, we just didn't match anything
@@ -57,6 +57,7 @@ function renderPage(appHtml) {
 }
 
 var PORT = process.env.PORT || 8080
+console.log("working");
 app.listen(PORT, function() {
     console.log('Production Express server running at localhost:' + PORT)
 })
