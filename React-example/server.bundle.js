@@ -74,7 +74,7 @@
 	// serve our static stuff like index.css
 
 	// we'll use this to render our app to an html string
-	app.use(_express2.default.static(_path2.default.join(__dirname, 'public')));
+	app.use(_express2.default.static(_path2.default.join(__dirname, 'public'), { index: false }));
 
 	// send all requests to index.html so browserHistory in React Router works
 	app.get('*', function (req, res) {
