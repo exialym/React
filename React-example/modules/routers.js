@@ -5,6 +5,7 @@ import About from './About'
 import Repos from './Repos'
 import Repo from './Repo'
 import Home from './Home'
+import Todo from './Flex/main'
 module.exports = (
 	<Route path="/" component={App}>
 		<IndexRoute component={Home}/>
@@ -12,8 +13,8 @@ module.exports = (
 			<Route path="/repos/:userName/:repoName" component={Repo}/>
 		</Route>
 		<Route path="/about" component={About}/>
-		<Route path="/nonav" onEnter={
-				({path}, replace) => replace("/repos")
-			} />
+		<Route path="/redirect" onEnter={({path}, replace) => replace("/repos")}/>
+		<Route path="/todo" component={Todo}/>
+
 	</Route>
 )

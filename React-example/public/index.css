@@ -36,6 +36,9 @@
           font-family: 'Open Sans'; }
         #main .content .nav ul a.active {
           color: #00539f; }
+    #main .content .middle {
+      flex: 1;
+      padding: 1em; }
 
 .active {
   color: green; }
