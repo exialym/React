@@ -15,14 +15,15 @@
   "license": "ISC",
   "dependencies": {
     "compression": "^1.6.2",
+    "events": "^1.1.1",
     "express": "^4.14.0",
     "flux": "^3.1.0",
     "if-env": "^1.0.0",
+    "object-assign": "^4.1.0",
     "react": "^15.3.2",
     "react-dom": "^15.3.2",
     "react-router": "2.x",
-    "events": "^1.1.1",
-    "object-assign": "^4.1.0"
+    "redux": "^3.6.0"
   },
   "devDependencies": {
     "babel-core": "^6.5.1",
