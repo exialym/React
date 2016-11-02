@@ -3,11 +3,12 @@ var React = require('react');
 var MyButton = function(props) {
   var items = props.items;
   var itemHtml = items.map(function (listItem, i) {
-    return <li key={i}>{listItem.content}{listItem.time}</li>;
+    return <li key={i} className={listItem.flag ? "done" : "undone"}>{listItem.content}<button onClick={props.done.bind(this,i)}>Done</button></li>;
   });
 
-  return <div>
+  return <div className="todoList">
     <ul>{itemHtml}</ul>
+    <input type="text" id="content"/>
     <button onClick={props.onClick}>New Item</button>
   </div>;
 };

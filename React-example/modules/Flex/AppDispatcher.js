@@ -12,6 +12,9 @@ AppDispatcher.register(function (action) {
     case 'ADD_NEW_ITEM':
       ListStore.addNewItemHandler(action.data);
       break;
+    case 'DONE_ITEM':
+      ListStore.doneItemHandler(action.index);
+      break;
     default:
     // no op
   }

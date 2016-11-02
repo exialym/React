@@ -19,7 +19,10 @@ var ListStore = assign({}, EventEmitter.prototype, {
     this.items.push(text);
     this.emit('change');
   },
-
+  doneItemHandler: function (index) {
+    this.items[index].flag = true;
+    this.emit('change');
+  },
   // ListStore.emitChange()用来发出一个"change"事件
   emitChange: function () {
     this.emit('change');

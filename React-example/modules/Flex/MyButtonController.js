@@ -25,15 +25,19 @@ var MyButtonController = React.createClass({
   },
   createNewItem: function (event) {
     ButtonActions.addNewItem({
-      content:"new item",
-      time:new Date(),
+      content:document.getElementById("content").value,
+      flag:false,
     });
+  },
+  itemDone: function (index) {
+    ButtonActions.doneItem(index);
   },
 
   render: function() {
     return <MyButton
       items={this.state.items}
       onClick={this.createNewItem}
+      done = {this.itemDone}
     />;
   }
 });

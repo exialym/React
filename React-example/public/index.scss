@@ -49,6 +49,24 @@
     .middle{
       flex:1;
       padding: 1em;
+      .todoList{
+        ul{
+          list-style: none;
+          padding:0;
+          li{
+            margin:0.5em;
+            button{
+              margin-left: 10px;
+            }
+          }
+          li.undone{
+            color:red;
+          }
+          li.done{
+            color:green;
+          }
+        }
+      }
     }
   }
 }

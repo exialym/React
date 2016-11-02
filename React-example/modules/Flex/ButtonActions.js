@@ -8,5 +8,11 @@ var ButtonActions = {
       data: data,
     });
   },
+  doneItem: function (index) {
+    AppDispatcher.dispatch({
+      actionType: 'DONE_ITEM',
+      index:index,
+    });
+  }
 };
 module.exports = ButtonActions;

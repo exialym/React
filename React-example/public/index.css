@@ -39,6 +39,17 @@
     #main .content .middle {
       flex: 1;
       padding: 1em; }
+      #main .content .middle .todoList ul {
+        list-style: none;
+        padding: 0; }
+        #main .content .middle .todoList ul li {
+          margin: 0.5em; }
+          #main .content .middle .todoList ul li button {
+            margin-left: 10px; }
+        #main .content .middle .todoList ul li.undone {
+          color: red; }
+        #main .content .middle .todoList ul li.done {
+          color: green; }
 
 .active {
   color: green; }
