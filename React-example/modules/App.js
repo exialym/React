@@ -13,7 +13,8 @@ export default React.createClass({
               <li><NavLink to="/repos">Blogs</NavLink></li>
               <li><NavLink to="/about">About</NavLink></li>
               <li><NavLink to="/redirect">Redirect</NavLink></li>
-              <li><NavLink to="/todo">TodoList</NavLink></li>
+              <li><NavLink to="/todo">FlexTodoList</NavLink></li>
+              <li><NavLink to="/counter">ReduxCounter</NavLink></li>
             </ul>
           </div>
           <div className="middle">

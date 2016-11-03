@@ -44,12 +44,21 @@
         padding: 0; }
         #main .content .middle .todoList ul li {
           margin: 0.5em; }
-          #main .content .middle .todoList ul li button {
-            margin-left: 10px; }
         #main .content .middle .todoList ul li.undone {
           color: red; }
         #main .content .middle .todoList ul li.done {
           color: green; }
+      #main .content .middle .todoList button, #main .content .middle .todoList input {
+        border: 1px solid rgba(147, 128, 108, 0.25);
+        padding: .5em .75em;
+        font: inherit; }
+      #main .content .middle .todoList button {
+        margin-right: 10px;
+        background-color: rgba(147, 128, 108, 0.1);
+        color: #666;
+        font: inherit;
+        font-weight: 400;
+        cursor: pointer; }
 
 .active {
   color: green; }

@@ -6,6 +6,7 @@ import Repos from './Repos'
 import Repo from './Repo'
 import Home from './Home'
 import Todo from './Flex/main'
+import Counter from './ReduxCounter/main'
 module.exports = (
 	<Route path="/" component={App}>
 		<IndexRoute component={Home}/>
@@ -15,6 +16,6 @@ module.exports = (
 		<Route path="/about" component={About}/>
 		<Route path="/redirect" onEnter={({path}, replace) => replace("/repos")}/>
 		<Route path="/todo" component={Todo}/>
-
+		<Route path="/counter" component={Counter}/>
 	</Route>
 )
