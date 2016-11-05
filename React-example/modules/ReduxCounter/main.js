@@ -78,7 +78,25 @@ const counter = React.createClass({
     store.dispatch({type:'SUB'});
   }
 });
-
+//假设我们有一系列的Counter，下面的方法可以增加计数器，删除计数器，为指定的计数器加1
+//这些方法都有一个特点，不会修改原来的计数器列表，而是返回一个全新的
+//这符合redux的原则
+const addCounter = (list) => {
+  return [...list,0];
+}
+const removeCounter = (list,index) => {
+  return [
+    ...list.slice(0,index),
+    ...list.slice(index + 1)
+  ];
+}
+const increaseCounter = (list,index) => {
+  return [
+    ...list.slice(0,index),
+    list[index] + 1,
+    ...list.slice(index + 1)
+  ]
+}
 
 
 export default counter;
