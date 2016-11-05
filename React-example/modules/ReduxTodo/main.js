@@ -1,3 +1,6 @@
+import React from 'react'
+import ReactDOM from 'react-dom'
+import {createStore} from 'redux'
 //todoReducer
 const todoReducer = (state = {}, action) => {
   switch (action.type) {
@@ -28,6 +31,7 @@ const todoReducer = (state = {}, action) => {
 const todosReducer = (state = [],action) => {
   switch (action.type) {
     case 'ADD_TODO':
+      //console.log(state);
       return [
         ...state,
         todoReducer(null, action),
@@ -62,6 +66,7 @@ const myCombineReducers = (reducers) => {
     return Object.keys(reducers).reduce((nextState,key) => {
       //所以如果来了一个action，会在每个子reducer里找一遍
       nextState[key] = reducers[key](state[key],action);
+      return nextState;
     }, {});
   };
 };
@@ -69,3 +74,42 @@ const todoApp = myCombineReducers({
   todos: todosReducer,
   visibilityFilter:visibilityFilterReducer,
 });
+const store = createStore(todoApp);
+var todoID = 0;
+var TodoApp = React.createClass({
+  render() {
+    return (
+      <div>
+        <input ref={node => {this.input = node}}/>
+        <button onClick={()=>{
+          if (this.input.value !== '') {
+            store.dispatch({
+              type:'ADD_TODO',
+              text:this.input.value,
+              id: ++todoID,
+            });
+            this.input.value = ''
+          }
+        }}>
+          Add Todo
+        </button>
+        <ul>
+          {store.getState().todos.map((todo) =>
+            <li key={todo.id}>
+              {todo.text}
+            </li>
+          )}
+        </ul>
+      </div>
+    )
+  },
+  componentDidMount: function () {
+    store.subscribe(this.forceUpdate.bind(this));
+  },
+});
+var temp = React.createClass({
+  render() {
+    return <TodoApp/>;
+  }
+})
+export default temp
