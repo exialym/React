@@ -59,6 +59,8 @@
         font: inherit;
         font-weight: 400;
         cursor: pointer; }
+      #main .content .middle .counter {
+        font-family: 'Monaco'; }
 
 .active {
   color: green; }

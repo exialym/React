@@ -1,4 +1,26 @@
 import React from 'react'
+//Store 就是保存数据的地方，你可以把它看成一个容器。整个应用只能有一个 Store。
+//createStore接受一个reduce函数来生成这个store
+
+//Store对象包含所有数据。如果想得到某个时点的数据，就要对 Store 生成快照。
+//这种时点的数据集合，就叫做 State。
+import {createStore} from 'redux'
+//redux的设计思想：Web 应用是一个状态机，视图与状态是一一对应的。
+//所有的状态，保存在一个对象里面，就是state
+
+//Redux 规定， 一个 State 对应一个 View。
+// 只要 State 相同，View 就相同。
+// 你知道 State，就知道 View 是什么样，反之亦然。
+
+//State 的变化，会导致 View 的变化。
+// 但是，用户接触不到 State，只能接触到 View。
+// 所以，State 的变化必须是 View 导致的。
+// Action 就是 View 发出的通知，表示 State 应该要发生变化了。
+// Action 是一个对象。其中的type属性是必须的，表示 Action 的名称。其他属性可以自由设置
+
+//Store 收到 Action 以后，必须给出一个新的 State，这样 View 才会发生变化。
+// 这种 State 的计算过程就叫做 Reducer。
+// Reducer 是一个函数，它接受 Action 和当前 State 作为参数，返回一个新的 State。
 const counterReducer = (state = 0, action) => {
   switch (action.type) {
     case 'ADD':
@@ -9,8 +31,31 @@ const counterReducer = (state = 0, action) => {
       return state;
   }
 }
-export default React.createClass({
+//在创建store时，把使用的reducer也传进去，reducer不手动调用，而是有dispatch方法自动调用
+var store = createStore(counterReducer);
+const counter = React.createClass({
   render() {
-    return <div>Counter</div>
+    return (
+      <div className="counter">
+        <h1>{store.getState()}</h1>
+        <button onClick={this.add}>+</button>
+        <button onClick={this.sub}>-</button>
+      </div>)
+  },
+  componentDidMount: function () {
+    //使用store.subscribe方法设置监听函数，一旦 State 发生变化，就自动执行这个函数。
+    store.subscribe(this.forceUpdate.bind(this));
+  },
+  add() {
+    //以后每当store.dispatch发送过来一个新的 Action，就会自动调用 Reducer，得到新的 State。
+    store.dispatch({type:'ADD'});
+  },
+  sub() {
+    //以后每当store.dispatch发送过来一个新的 Action，就会自动调用 Reducer，得到新的 State。
+    store.dispatch({type:'SUB'});
   }
-})
+});
+
+
+
+export default counter;
