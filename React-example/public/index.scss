@@ -49,6 +49,19 @@
     .middle{
       flex:1;
       padding: 1em;
+      button,input{
+        border: 1px solid hsla(31,15%,50%,.25);
+        padding: .5em .75em;
+        font: inherit;
+      }
+      button{
+        margin: 10px 20px 10px 0;
+        background-color: hsla(31,15%,50%,.1);
+        color: #666;
+        font: inherit;
+        font-weight: 400;
+        cursor: pointer;
+      }
       .todoList{
         ul{
           list-style: none;
@@ -63,19 +76,7 @@
             color:green;
           }
         }
-        button,input{
-          border: 1px solid hsla(31,15%,50%,.25);
-          padding: .5em .75em;
-          font: inherit;
-        }
-        button{
-          margin-right: 10px;
-          background-color: hsla(31,15%,50%,.1);
-          color: #666;
-          font: inherit;
-          font-weight: 400;
-          cursor: pointer;
-        }
+
       }
       .counter{
         font-family: 'Monaco';

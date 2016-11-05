@@ -21,16 +21,47 @@ import {createStore} from 'redux'
 //Store 收到 Action 以后，必须给出一个新的 State，这样 View 才会发生变化。
 // 这种 State 的计算过程就叫做 Reducer。
 // Reducer 是一个函数，它接受 Action 和当前 State 作为参数，返回一个新的 State。
-const counterReducer = (state = 0, action) => {
+const counterReducer = (state = [0], action) => {
+  //假设我们有一系列的Counter，下面的方法可以增加计数器，删除计数器，为指定的计数器加1
+  //这些方法都有一个特点，不会修改原来的计数器列表，而是返回一个全新的
+  //这符合redux的原则
+  const addCounter = (list) => {
+    return [...list,0];
+  };
+  const removeCounter = (list,index) => {
+    return [
+      ...list.slice(0,index),
+      ...list.slice(index + 1)
+    ];
+  };
+  const add = (list,index) => {
+    return [
+      ...list.slice(0,index),
+      list[index] + 1,
+      ...list.slice(index + 1)
+    ]
+  };
+  const sub = (list,index) => {
+    return [
+      ...list.slice(0,index),
+      list[index] - 1,
+      ...list.slice(index + 1)
+    ]
+  };
   switch (action.type) {
     case 'ADD':
-      return state + 1;
+      return add(state,action.index);
     case 'SUB':
-      return state - 1;
+      return sub(state,action.index);
+    case 'ADD_COUNTER':
+      return addCounter(state);
+    case 'REMOVE_COUNTER':
+      return removeCounter(state,action.index);
     default:
       return state;
   }
 }
+
 //在创建store时，把使用的reducer也传进去，reducer不手动调用，而是有dispatch方法自动调用
 var store = createStore(counterReducer);
 //为了了解creatStore的原理，我们自己实现一个creatStore
@@ -56,56 +87,53 @@ const myCreatStore = (reducer) => {
   return {getState,dispatch,subscribe};
 }
 store = myCreatStore(counterReducer);
-const counter = React.createClass({
+const Counter = React.createClass({
   render() {
+    var counters = [];
+    store.getState().forEach((a,index) => {
+      counters.push(
+        <div key={index}>
+          <h1>{a}</h1>
+          <button onClick={this.add.bind(this,index)} >+</button>
+          <button onClick={this.sub.bind(this,index)} >-</button>
+          <button onClick={this.remove.bind(this,index)} >remove</button>
+        </div>
+      )
+    })
     return (
       <div className="counter">
-        <h1>{store.getState()}</h1>
-        <button onClick={this.add}>+</button>
-        <button onClick={this.sub}>-</button>
+        {counters}
+        <button onClick={this.addCounter} >add</button>
       </div>)
   },
   componentDidMount: function () {
     //使用store.subscribe方法设置监听函数，一旦 State 发生变化，就自动执行这个函数。
     store.subscribe(this.forceUpdate.bind(this));
   },
-  add() {
-    //以后每当store.dispatch发送过来一个新的 Action，就会自动调用 Reducer，得到新的 State。
-    store.dispatch({type:'ADD'});
+  add(index) {
+    //每当store.dispatch发送过来一个新的 Action，就会自动调用 Reducer，得到新的 State。
+    store.dispatch({
+      type:'ADD',
+      index:index,
+    });
   },
-  sub() {
-    //以后每当store.dispatch发送过来一个新的 Action，就会自动调用 Reducer，得到新的 State。
-    store.dispatch({type:'SUB'});
+  sub(index) {
+    store.dispatch({
+      type:'SUB',
+      index:index,
+    });
+  },
+  addCounter() {
+    store.dispatch({
+      type:'ADD_COUNTER',
+    });
+  },
+  remove(index) {
+    store.dispatch({
+      type:'REMOVE_COUNTER',
+      index:index,
+    });
   }
 });
-//假设我们有一系列的Counter，下面的方法可以增加计数器，删除计数器，为指定的计数器加1
-//这些方法都有一个特点，不会修改原来的计数器列表，而是返回一个全新的
-//这符合redux的原则
-const addCounter = (list) => {
-  return [...list,0];
-};
-const removeCounter = (list,index) => {
-  return [
-    ...list.slice(0,index),
-    ...list.slice(index + 1)
-  ];
-};
-const increaseCounter = (list,index) => {
-  return [
-    ...list.slice(0,index),
-    list[index] + 1,
-    ...list.slice(index + 1)
-  ]
-};
-//对象也是，使用assign或...来返回新的对象
-const toggleTodo = (todo) => {
-  return Object.assign({},todo,{
-    completed: !todo.completed,
-  });
-  // return {
-  //   ...todo,
-  //   completed: !todo.completed,
-  // };
-}
 
-export default counter;
+export default Counter;
