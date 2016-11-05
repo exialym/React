@@ -33,6 +33,29 @@ const counterReducer = (state = 0, action) => {
 }
 //在创建store时，把使用的reducer也传进去，reducer不手动调用，而是有dispatch方法自动调用
 var store = createStore(counterReducer);
+//为了了解creatStore的原理，我们自己实现一个creatStore
+const myCreatStore = (reducer) => {
+  let state;
+  let listeners = [];
+  const getState = () => state;
+  const dispatch = (action) => {
+    //在收到新的action时，调用reducer，传入当前状态和action
+    state = reducer(state, action);
+    //执行所有listener
+    listeners.forEach(listener => listener());
+  }
+  const subscribe = (listener) => {
+    listeners.push(listener);
+    //返回一个方法，如果你想注销掉这个监听，就调用这个返回的方法就好
+    return () => {
+      listeners = listeners.filter(l => l !== listener);
+    }
+  }
+  //这里自己调用一下dispatch，以便state得到reducer设置的初始状态
+  dispatch({});
+  return {getState,dispatch,subscribe};
+}
+store = myCreatStore(counterReducer);
 const counter = React.createClass({
   render() {
     return (
