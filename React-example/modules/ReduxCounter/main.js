@@ -83,20 +83,29 @@ const counter = React.createClass({
 //这符合redux的原则
 const addCounter = (list) => {
   return [...list,0];
-}
+};
 const removeCounter = (list,index) => {
   return [
     ...list.slice(0,index),
     ...list.slice(index + 1)
   ];
-}
+};
 const increaseCounter = (list,index) => {
   return [
     ...list.slice(0,index),
     list[index] + 1,
     ...list.slice(index + 1)
   ]
+};
+//对象也是，使用assign或...来返回新的对象
+const toggleTodo = (todo) => {
+  return Object.assign({},todo,{
+    completed: !todo.completed,
+  });
+  // return {
+  //   ...todo,
+  //   completed: !todo.completed,
+  // };
 }
-
 
 export default counter;
