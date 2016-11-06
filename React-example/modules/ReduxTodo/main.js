@@ -76,6 +76,18 @@ const todoApp = myCombineReducers({
 });
 const store = createStore(todoApp);
 var todoID = 0;
+const getVisibleTodos = (todos,filter) => {
+  switch (filter) {
+    case 'SHOW_ALL':
+      return todos;
+    case 'SHOW_ACTIVE':
+      return todos.filter(t=>!t.completed);
+    case 'SHOW_COMPLETED':
+      return todos.filter(t=>t.completed);
+    default:
+      return todos;
+  }
+};
 //Filter子组件
 const Link = ({active,children,onClick}) => {
   if (active) {
@@ -92,6 +104,12 @@ const Link = ({active,children,onClick}) => {
 };
 //Filter容器，以便state参数不用从顶一直传到这里
 const FilterLink = React.createClass({
+  componentDidMount: function () {
+    this.unsubscribe = store.subscribe(() => this.forceUpdate());
+  },
+  componentWillUnmount() {
+    this.unsubscribe();
+  },
   render() {
     const props = this.props;
     const state = store.getState();
@@ -121,6 +139,8 @@ const Footer = () => (
     <FilterLink filter="SHOW_COMPLETED">Completed</FilterLink>
   </p>
 );
+
+
 //Todo项子组件
 const Todo = ({onClick,completed,text})=>(
   <li onClick={onClick}
@@ -140,14 +160,43 @@ const TodoList = ({todos, onTodoClick}) => (
     )}
   </ol>
 );
+const VisibleTodoList = React.createClass({
+  componentDidMount: function () {
+    this.unsubscribe = store.subscribe(() => this.forceUpdate());
+  },
+  componentWillUnmount() {
+    this.unsubscribe();
+  },
+  render() {
+    const props = this.props;
+    const state = store.getState();
+    return (
+      <TodoList
+        todos={getVisibleTodos(state.todos,state.visibilityFilter)}
+        onTodoClick={id=> {
+          store.dispatch({
+            type:'TOGGLE_TODO',
+            id:id,
+          })
+        }}
+      />
+    );
+  }
+});
 //add todo子组件
-const AddTodo = ({onAddClick}) => {
+const AddTodo = () => {
   let input;
   return (
     <div>
       <input ref={node => {input = node}}/>
       <button onClick={()=>{
-        onAddClick(input.value);
+        if (input.value!=='') {
+          store.dispatch({
+            type:'ADD_TODO',
+            text:input.value,
+            id: ++todoID,
+          });
+        }
         input.value = '';
         }}>
         Add Todo
@@ -155,53 +204,16 @@ const AddTodo = ({onAddClick}) => {
     </div>
   )
 };
-const getVisibleTodos = (todos,filter) => {
-  switch (filter) {
-    case 'SHOW_ALL':
-      return todos;
-    case 'SHOW_ACTIVE':
-      return todos.filter(t=>!t.completed);
-    case 'SHOW_COMPLETED':
-      return todos.filter(t=>t.completed);
-    default:
-      return todos;
-  }
-};
 //TodoList组件
 var TodoApp = React.createClass({
   render() {
-    const {todos,visibilityFilter} = store.getState();
     return (
       <div className="reduxTodo">
-        <AddTodo onAddClick={text => {
-          if (text!=='') {
-            store.dispatch({
-              type:'ADD_TODO',
-              text:text,
-              id: ++todoID,
-            });
-          }
-        }}/>
-        <TodoList
-          todos={getVisibleTodos(todos,visibilityFilter)}
-          onTodoClick={id=> {
-            store.dispatch({
-              type:'TOGGLE_TODO',
-              id:id,
-            })
-          }}
-        />
+        <AddTodo/>
+        <VisibleTodoList/>
         <Footer/>
       </div>
     )
-  },
-  componentDidMount: function () {
-    store.subscribe(() => this.forceUpdate());
-  },
-});
-var temp = React.createClass({
-  render() {
-    return <TodoApp/>;
   }
-})
-export default temp
+});
+export default TodoApp
