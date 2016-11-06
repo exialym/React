@@ -76,7 +76,6 @@ const todoApp = myCombineReducers({
 //在这里创建store，在后面每个组件中使用这个store现在看来是可行的，但是其实并不是这样的
 // 如果这个页面是在服务器渲染的，我们希望每一个请求有一个store因为每一个请求的数据是不一样的
 //const store = createStore(todoApp);
-var todoID = 0;
 const getVisibleTodos = (todos,filter) => {
   switch (filter) {
     case 'SHOW_ALL':
@@ -246,6 +245,15 @@ const VisibleTodoList = connect(
 )(TodoList)
 /*********************************Todolist容器完*************************************/
 //add todo子组件，这里的第二个参数就是环境变量
+var todoID = 0;
+//使用Action Creater，一个应用的action是固定的，使用creater来产生各个实际的action会标准且方便
+const addTodo = (text) => {
+  return {
+    type:'ADD_TODO',
+    text:text,
+    id: ++todoID,
+  };
+};
 const AddTodo = (props,{store}) => {
   let input;
   return (
@@ -253,11 +261,7 @@ const AddTodo = (props,{store}) => {
       <input ref={node => {input = node}}/>
       <button onClick={()=>{
         if (input.value!=='') {
-          store.dispatch({
-            type:'ADD_TODO',
-            text:input.value,
-            id: ++todoID,
-          });
+          store.dispatch(addTodo(input.value));
         }
         input.value = '';
         }}>
