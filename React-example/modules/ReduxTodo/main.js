@@ -76,8 +76,39 @@ const todoApp = myCombineReducers({
 });
 const store = createStore(todoApp);
 var todoID = 0;
+//Filter子组件
+const FilterLink = ({filter,currentFilter,children}) => {
+  if (filter===currentFilter) {
+    return <span>{children}</span>
+  }
+  return (
+    <a href="#" onClick={e => {
+      e.preventDefault();
+      store.dispatch({
+        type:'SET_FILTER',
+        filter
+      })
+    }}>
+      {children}
+    </a>
+  )
+};
+const getVisibleTodos = (todos,filter) => {
+  switch (filter) {
+    case 'SHOW_ALL':
+      return todos;
+    case 'SHOW_ACTIVE':
+      return todos.filter(t=>!t.completed);
+    case 'SHOW_COMPLETED':
+      return todos.filter(t=>t.completed);
+    default:
+      return todos;
+  }
+};
+//TodoList组件
 var TodoApp = React.createClass({
   render() {
+    const {todos,visibilityFilter} = store.getState();
     return (
       <div className="reduxTodo">
         <input ref={node => {this.input = node}}/>
@@ -94,7 +125,7 @@ var TodoApp = React.createClass({
           Add Todo
         </button>
         <ol>
-          {store.getState().todos.map((todo) =>
+          {getVisibleTodos(todos,visibilityFilter).map((todo) =>
             <li key={todo.id}
                 onClick={() => {
                   store.dispatch({
@@ -109,6 +140,12 @@ var TodoApp = React.createClass({
             </li>
           )}
         </ol>
+        <p>
+          Show:{'  '}
+          <FilterLink filter="SHOW_ALL" currentFilter={visibilityFilter}>All</FilterLink>{'  '}
+          <FilterLink filter="SHOW_ACTIVE" currentFilter={visibilityFilter}>Active</FilterLink>{'  '}
+          <FilterLink filter="SHOW_COMPLETED" currentFilter={visibilityFilter}>Completed</FilterLink>
+        </p>
       </div>
     )
   },

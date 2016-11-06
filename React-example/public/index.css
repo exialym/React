@@ -62,6 +62,12 @@
           color: green; }
       #main .content .middle .reduxTodo li {
         cursor: pointer; }
+      #main .content .middle .reduxTodo p {
+        margin-top: 1em; }
+      #main .content .middle .reduxTodo a {
+        text-decoration: none; }
+      #main .content .middle .reduxTodo span {
+        color: green; }
 
 .active {
   color: green; }
