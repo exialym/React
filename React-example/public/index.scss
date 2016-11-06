@@ -1,6 +1,7 @@
 *{
   margin:0;
   box-sizing: border-box;
+  font-family: 'Monaco';
 }
 #main{
   display: flex;
@@ -76,10 +77,11 @@
             color:green;
           }
         }
-
       }
-      .counter{
-        font-family: 'Monaco';
+      .reduxTodo{
+        li{
+          cursor: pointer;
+        }
       }
     }
   }

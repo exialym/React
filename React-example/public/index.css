@@ -1,6 +1,7 @@
 * {
   margin: 0;
-  box-sizing: border-box; }
+  box-sizing: border-box;
+  font-family: 'Monaco'; }
 
 #main {
   display: flex;
@@ -59,8 +60,8 @@
           color: red; }
         #main .content .middle .todoList ul li.done {
           color: green; }
-      #main .content .middle .counter {
-        font-family: 'Monaco'; }
+      #main .content .middle .reduxTodo li {
+        cursor: pointer; }
 
 .active {
   color: green; }
