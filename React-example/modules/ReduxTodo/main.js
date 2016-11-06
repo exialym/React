@@ -93,6 +93,25 @@ const FilterLink = ({filter,currentFilter,children}) => {
     </a>
   )
 };
+//Todo项子组件
+const Todo = ({onClick,completed,text})=>(
+  <li onClick={onClick}
+      style={{textDecoration: completed ? 'line-through' : 'none'}}>
+    {text}
+  </li>
+);
+//TodoList子组件
+const TodoList = ({todos, onTodoClick}) => (
+  <ol>
+    {todos.map(todo =>
+      <Todo
+        key={todo.id}
+        {...todo}
+        onClick={() => onTodoClick(todo.id)}
+      />
+    )}
+  </ol>
+);
 const getVisibleTodos = (todos,filter) => {
   switch (filter) {
     case 'SHOW_ALL':
@@ -124,22 +143,15 @@ var TodoApp = React.createClass({
         }}>
           Add Todo
         </button>
-        <ol>
-          {getVisibleTodos(todos,visibilityFilter).map((todo) =>
-            <li key={todo.id}
-                onClick={() => {
-                  store.dispatch({
-                    type:'TOGGLE_TODO',
-                    id:todo.id,
-                  })
-                }}
-                style={{
-                  textDecoration: todo.completed ? 'line-through' : 'none'
-                }}>
-              {todo.text}
-            </li>
-          )}
-        </ol>
+        <TodoList
+          todos={getVisibleTodos(todos,visibilityFilter)}
+          onTodoClick={id=> {
+            store.dispatch({
+              type:'TOGGLE_TODO',
+              id:id,
+            })
+          }}
+        />
         <p>
           Show:{'  '}
           <FilterLink filter="SHOW_ALL" currentFilter={visibilityFilter}>All</FilterLink>{'  '}
