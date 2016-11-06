@@ -77,26 +77,48 @@ const todoApp = myCombineReducers({
 const store = createStore(todoApp);
 var todoID = 0;
 //Filter子组件
-const FilterLink = ({filter,currentFilter,children,onClick}) => {
-  if (filter===currentFilter) {
+const Link = ({active,children,onClick}) => {
+  if (active) {
     return <span>{children}</span>
   }
   return (
     <a href="#" onClick={e => {
       e.preventDefault();
-      onClick(filter);
+      onClick();
     }}>
       {children}
     </a>
   )
 };
+//Filter容器，以便state参数不用从顶一直传到这里
+const FilterLink = React.createClass({
+  render() {
+    const props = this.props;
+    const state = store.getState();
+    return (
+      <Link
+        active={
+          props.filter===state.visibilityFilter
+        }
+        onClick={() => {
+          store.dispatch({
+            type:'SET_FILTER',
+            filter:props.filter,
+          })
+        }}
+      >
+        {props.children}
+      </Link>
+    )
+  },
+});
 //Fliters子组件
-const Footer = ({visibilityFilter,onFilterClick}) => (
+const Footer = () => (
   <p>
     Show:{'  '}
-    <FilterLink filter="SHOW_ALL" currentFilter={visibilityFilter} onClick={onFilterClick}>All</FilterLink>{'  '}
-    <FilterLink filter="SHOW_ACTIVE" currentFilter={visibilityFilter} onClick={onFilterClick}>Active</FilterLink>{'  '}
-    <FilterLink filter="SHOW_COMPLETED" currentFilter={visibilityFilter} onClick={onFilterClick}>Completed</FilterLink>
+    <FilterLink filter="SHOW_ALL">All</FilterLink>{'  '}
+    <FilterLink filter="SHOW_ACTIVE">Active</FilterLink>{'  '}
+    <FilterLink filter="SHOW_COMPLETED">Completed</FilterLink>
   </p>
 );
 //Todo项子组件
@@ -169,20 +191,12 @@ var TodoApp = React.createClass({
             })
           }}
         />
-        <Footer
-          visibilityFilter = {visibilityFilter}
-          onFilterClick = {filter => {
-            store.dispatch({
-              type:'SET_FILTER',
-              filter
-            })
-          }}
-        />
+        <Footer/>
       </div>
     )
   },
   componentDidMount: function () {
-    store.subscribe(this.forceUpdate.bind(this));
+    store.subscribe(() => this.forceUpdate());
   },
 });
 var temp = React.createClass({
