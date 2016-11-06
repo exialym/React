@@ -74,7 +74,9 @@ const todoApp = myCombineReducers({
   todos: todosReducer,
   visibilityFilter:visibilityFilterReducer,
 });
-const store = createStore(todoApp);
+//在这里创建store，在后面每个组件中使用这个store现在看来是可行的，但是其实并不是这样的
+// 如果这个页面是在服务器渲染的，我们希望每一个请求有一个store因为每一个请求的数据是不一样的
+//const store = createStore(todoApp);
 var todoID = 0;
 const getVisibleTodos = (todos,filter) => {
   switch (filter) {
@@ -105,6 +107,7 @@ const Link = ({active,children,onClick}) => {
 //Filter容器，以便state参数不用从顶一直传到这里
 const FilterLink = React.createClass({
   componentDidMount: function () {
+    const {store} = this.props;
     this.unsubscribe = store.subscribe(() => this.forceUpdate());
   },
   componentWillUnmount() {
@@ -112,6 +115,7 @@ const FilterLink = React.createClass({
   },
   render() {
     const props = this.props;
+    const {store} = props;
     const state = store.getState();
     return (
       <Link
@@ -131,12 +135,12 @@ const FilterLink = React.createClass({
   },
 });
 //Fliters子组件
-const Footer = () => (
+const Footer = ({store}) => (
   <p>
     Show:{'  '}
-    <FilterLink filter="SHOW_ALL">All</FilterLink>{'  '}
-    <FilterLink filter="SHOW_ACTIVE">Active</FilterLink>{'  '}
-    <FilterLink filter="SHOW_COMPLETED">Completed</FilterLink>
+    <FilterLink filter="SHOW_ALL" store={store}>All</FilterLink>{'  '}
+    <FilterLink filter="SHOW_ACTIVE" store={store}>Active</FilterLink>{'  '}
+    <FilterLink filter="SHOW_COMPLETED" store={store}>Completed</FilterLink>
   </p>
 );
 
@@ -161,7 +165,9 @@ const TodoList = ({todos, onTodoClick}) => (
   </ol>
 );
 const VisibleTodoList = React.createClass({
+
   componentDidMount: function () {
+    const {store} = this.props;
     this.unsubscribe = store.subscribe(() => this.forceUpdate());
   },
   componentWillUnmount() {
@@ -169,6 +175,7 @@ const VisibleTodoList = React.createClass({
   },
   render() {
     const props = this.props;
+    const {store} = props;
     const state = store.getState();
     return (
       <TodoList
@@ -184,7 +191,7 @@ const VisibleTodoList = React.createClass({
   }
 });
 //add todo子组件
-const AddTodo = () => {
+const AddTodo = ({store}) => {
   let input;
   return (
     <div>
@@ -207,13 +214,15 @@ const AddTodo = () => {
 //TodoList组件
 var TodoApp = React.createClass({
   render() {
+    const store=createStore(todoApp);
     return (
       <div className="reduxTodo">
-        <AddTodo/>
-        <VisibleTodoList/>
-        <Footer/>
+        <AddTodo store={store}/>
+        <VisibleTodoList store={store}/>
+        <Footer store={store}/>
       </div>
     )
   }
 });
+
 export default TodoApp
