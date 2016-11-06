@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="9305aacf-cd68-4e60-a37a-b1808d227c94" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/modules/ReduxTodo/main.js" afterPath="$PROJECT_DIR$/modules/ReduxTodo/main.js" />
     </list>
     <ignored path="React-router.iws" />
@@ -91,10 +90,10 @@
       <file leaf-file-name="main.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/modules/ReduxTodo/main.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="794">
-              <caret line="78" column="2" selection-start-line="78" selection-start-column="2" selection-end-line="78" selection-end-column="2" />
+            <state relative-caret-position="970">
+              <caret line="249" column="2" selection-start-line="249" selection-start-column="2" selection-end-line="249" selection-end-column="2" />
               <folding>
-                <element signature="e#0#25#0" expanded="true" />
+                <element signature="e#0#37#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -124,7 +123,7 @@
         <entry file="file://$PROJECT_DIR$/package.json">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="506">
-              <caret line="23" column="14" selection-start-line="23" selection-start-column="5" selection-end-line="23" selection-end-column="14" />
+              <caret line="25" column="14" selection-start-line="23" selection-start-column="5" selection-end-line="23" selection-end-column="14" />
               <folding />
             </state>
           </provider>
@@ -399,15 +398,15 @@
       <workItem from="1478182036605" duration="765000" />
       <workItem from="1478265106927" duration="519000" />
       <workItem from="1478328450493" duration="18103000" />
-      <workItem from="1478394679332" duration="11269000" />
+      <workItem from="1478394679332" duration="14852000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="54791000" />
+    <option name="totallyTimeSpent" value="58374000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="0" width="1124" height="1200" extended-state="6" />
+    <frame x="0" y="0" width="1124" height="1200" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.041704442" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -806,7 +805,7 @@
     <entry file="file://$PROJECT_DIR$/package.json">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="506">
-          <caret line="23" column="14" selection-start-line="23" selection-start-column="5" selection-end-line="23" selection-end-column="14" />
+          <caret line="25" column="14" selection-start-line="23" selection-start-column="5" selection-end-line="23" selection-end-column="14" />
           <folding />
         </state>
       </provider>
@@ -821,10 +820,10 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/modules/ReduxTodo/main.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="794">
-          <caret line="78" column="2" selection-start-line="78" selection-start-column="2" selection-end-line="78" selection-end-column="2" />
+        <state relative-caret-position="970">
+          <caret line="249" column="2" selection-start-line="249" selection-start-column="2" selection-end-line="249" selection-end-column="2" />
           <folding>
-            <element signature="e#0#25#0" expanded="true" />
+            <element signature="e#0#37#0" expanded="true" />
           </folding>
         </state>
       </provider>

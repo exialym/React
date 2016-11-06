@@ -1,5 +1,4 @@
-import React from 'react'
-import ReactDOM from 'react-dom'
+import React ,{Component}from 'react'
 import {createStore} from 'redux'
 //todoReducer
 const todoReducer = (state = {}, action) => {
@@ -105,17 +104,17 @@ const Link = ({active,children,onClick}) => {
   )
 };
 //Filter容器，以便state参数不用从顶一直传到这里
-const FilterLink = React.createClass({
-  componentDidMount: function () {
-    const {store} = this.props;
+class FilterLink extends Component {
+  componentDidMount() {
+    const {store} = this.context;
     this.unsubscribe = store.subscribe(() => this.forceUpdate());
-  },
+  }
   componentWillUnmount() {
     this.unsubscribe();
-  },
+  }
   render() {
     const props = this.props;
-    const {store} = props;
+    const {store} = this.context;
     const state = store.getState();
     return (
       <Link
@@ -132,15 +131,18 @@ const FilterLink = React.createClass({
         {props.children}
       </Link>
     )
-  },
-});
+  }
+}
+FilterLink.contextTypes = {
+  store: React.PropTypes.object
+};
 //Fliters子组件
-const Footer = ({store}) => (
+const Footer = () => (
   <p>
     Show:{'  '}
-    <FilterLink filter="SHOW_ALL" store={store}>All</FilterLink>{'  '}
-    <FilterLink filter="SHOW_ACTIVE" store={store}>Active</FilterLink>{'  '}
-    <FilterLink filter="SHOW_COMPLETED" store={store}>Completed</FilterLink>
+    <FilterLink filter="SHOW_ALL">All</FilterLink>{'  '}
+    <FilterLink filter="SHOW_ACTIVE">Active</FilterLink>{'  '}
+    <FilterLink filter="SHOW_COMPLETED">Completed</FilterLink>
   </p>
 );
 
@@ -164,18 +166,19 @@ const TodoList = ({todos, onTodoClick}) => (
     )}
   </ol>
 );
-const VisibleTodoList = React.createClass({
+class VisibleTodoList extends Component {
 
-  componentDidMount: function () {
-    const {store} = this.props;
+  componentDidMount () {
+    //读取环境变量
+    const {store} = this.context;
     this.unsubscribe = store.subscribe(() => this.forceUpdate());
-  },
+  }
   componentWillUnmount() {
     this.unsubscribe();
-  },
+  }
   render() {
     const props = this.props;
-    const {store} = props;
+    const {store} = this.context;
     const state = store.getState();
     return (
       <TodoList
@@ -189,9 +192,12 @@ const VisibleTodoList = React.createClass({
       />
     );
   }
-});
-//add todo子组件
-const AddTodo = ({store}) => {
+}
+VisibleTodoList.contextTypes = {
+  store: React.PropTypes.object
+};
+//add todo子组件，这里的第二个参数就是环境变量
+const AddTodo = (props,{store}) => {
   let input;
   return (
     <div>
@@ -211,18 +217,35 @@ const AddTodo = ({store}) => {
     </div>
   )
 };
+//每个使用环境变量的组件也要指明环境变量的种类
+AddTodo.contextTypes = {
+  store: React.PropTypes.object
+};
 //TodoList组件
-var TodoApp = React.createClass({
+var TodoApp = () => (
+  <div className="reduxTodo">
+    <AddTodo/>
+    <VisibleTodoList/>
+    <Footer/>
+  </div>
+);
+//因为不想把store从总组件一层一层传下去
+//我们使用一个容器，并把store设置为环境变量
+var Provider = React.createClass({
+  //设置这个context使得所有子组件都能读到这个环境变量
+  getChildContext() {
+    return {
+      store: createStore(todoApp)
+    }
+  },
   render() {
-    const store=createStore(todoApp);
-    return (
-      <div className="reduxTodo">
-        <AddTodo store={store}/>
-        <VisibleTodoList store={store}/>
-        <Footer store={store}/>
-      </div>
-    )
+    return <TodoApp/>;
   }
 });
-
-export default TodoApp
+//要记得设置每个环境变量的种类
+Provider.childContextTypes = {
+  store: React.PropTypes.object
+};
+//这个容器在react-redux中有现成的实现
+//import Provider from 'react-redux';
+export default Provider
