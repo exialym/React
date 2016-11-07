@@ -14,8 +14,17 @@ import TodoApp from './Component/TodoApp'
 var Provider = React.createClass({
   //设置这个context使得所有子组件都能读到这个环境变量
   getChildContext() {
+    const persistedInitialState = {
+      todos:[{
+        id: '0',
+        text: 'Welcom Back',
+        completed: false,
+      }]
+    };
     return {
-      store: createStore(todoAppReducer)
+      //creatStore可以接受第2个参数，这是一个对象，用来指定state的初始状态，可以部分指定，也可以全部指定
+      //未指定的state属性将继续使用reducer中传入的默认值
+      store: createStore(todoAppReducer,persistedInitialState)
     }
   },
   render() {

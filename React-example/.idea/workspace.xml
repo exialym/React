@@ -2,8 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="9305aacf-cd68-4e60-a37a-b1808d227c94" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/modules/ReduxTodo/Component/TodoApp.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/modules/ReduxTodo/main.js" afterPath="$PROJECT_DIR$/modules/ReduxTodo/main.js" />
     </list>
     <ignored path="React-router.iws" />
@@ -35,11 +33,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="main.js" pinned="false" current-in-tab="false">
+      <file leaf-file-name="main.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/modules/ReduxTodo/main.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="396">
-              <caret line="18" column="5" selection-start-line="18" selection-start-column="5" selection-end-line="18" selection-end-column="5" />
+            <state relative-caret-position="528">
+              <caret line="24" column="64" selection-start-line="24" selection-start-column="8" selection-end-line="24" selection-end-column="64" />
               <folding>
                 <element signature="e#0#37#0" expanded="true" />
                 <element signature="e#215#269#0" expanded="true" />
@@ -48,7 +46,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="TodoApp.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="TodoApp.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/modules/ReduxTodo/Component/TodoApp.js">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="264">
@@ -169,8 +167,8 @@
         <option value="$PROJECT_DIR$/modules/ReduxTodo/Component/Footer.js" />
         <option value="$PROJECT_DIR$/modules/ReduxTodo/Component/VisibleTodoList.js" />
         <option value="$PROJECT_DIR$/modules/ReduxTodo/Component/AddTodo.js" />
-        <option value="$PROJECT_DIR$/modules/ReduxTodo/main.js" />
         <option value="$PROJECT_DIR$/modules/ReduxTodo/Component/TodoApp.js" />
+        <option value="$PROJECT_DIR$/modules/ReduxTodo/main.js" />
       </list>
     </option>
   </component>
@@ -411,18 +409,18 @@
       <workItem from="1478265106927" duration="519000" />
       <workItem from="1478328450493" duration="18103000" />
       <workItem from="1478394679332" duration="18554000" />
-      <workItem from="1478518010123" duration="2807000" />
+      <workItem from="1478518010123" duration="3402000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="64883000" />
+    <option name="totallyTimeSpent" value="65478000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1412" height="1200" extended-state="6" />
-    <editor active="false" />
+    <editor active="true" />
     <layout>
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.17038102" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.17038102" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="npm" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
@@ -828,23 +826,23 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/modules/ReduxTodo/main.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="396">
-          <caret line="18" column="5" selection-start-line="18" selection-start-column="5" selection-end-line="18" selection-end-column="5" />
-          <folding>
-            <element signature="e#0#37#0" expanded="true" />
-            <element signature="e#215#269#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/modules/ReduxTodo/Component/TodoApp.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="264">
           <caret line="12" column="23" selection-start-line="12" selection-start-column="23" selection-end-line="12" selection-end-column="23" />
           <folding>
             <element signature="e#0#37#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/modules/ReduxTodo/main.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="528">
+          <caret line="24" column="64" selection-start-line="24" selection-start-column="8" selection-end-line="24" selection-end-column="64" />
+          <folding>
+            <element signature="e#0#37#0" expanded="true" />
+            <element signature="e#215#269#0" expanded="true" />
           </folding>
         </state>
       </provider>
