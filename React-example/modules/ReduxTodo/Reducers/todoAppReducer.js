@@ -17,10 +17,12 @@ const myCombineReducers = (reducers) => {
     }, {});
   };
 };
-import todosReducer from './todosReducer'
+import todosReducer,* as fromTodos from './todosReducer'
 import visibilityFilterReducer from './visibilityFilterReducer'
 const todoApp = myCombineReducers({
   todos: todosReducer,
   visibilityFilter:visibilityFilterReducer,
 });
 export default todoApp;
+export const getVisibleTodos = (state) =>
+  fromTodos.getVisibleTodos(state.todos,state.visibilityFilter);

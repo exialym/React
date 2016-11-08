@@ -15,3 +15,16 @@ const todosReducer = (state = [],action) => {
   }
 };
 export default todosReducer;
+//这种函数通常被成为选择器，它们从state中筛选出我们要的
+export const getVisibleTodos = (state,filter) => {
+  switch (filter) {
+    case 'SHOW_ALL':
+      return state;
+    case 'SHOW_ACTIVE':
+      return state.filter(t=>!t.completed);
+    case 'SHOW_COMPLETED':
+      return state.filter(t=>t.completed);
+    default:
+      return todos;
+  }
+};
