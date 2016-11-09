@@ -83,7 +83,12 @@ mapDispatchToProps = {
       type: 'TOGGLE_TODO',
       id: id
     }
-  }
+  },
+  receiveTodos: (filter, response) => ({
+    type:'RECEIVE_TODOS',
+    filter,
+    response
+  })
 };
 // 原来直接在TodoList上使用connect生成包装组件
 // VisibleTodoList = connect(
@@ -93,20 +98,22 @@ mapDispatchToProps = {
 //但是我们想使用VisibleTodoList的生命周期函数，connect函数直接生成的元素没法修改，于是再添一层包装
 class VisibleTodoList extends Component {
   componentDidMount() {
-    fetchTodos(this.props.filter).then(todos => {
-      console.log(this.props.filter, 'hahaha', todos);
-    });
+    this.fetchData()
   }
   componentDidUpdate(prevProps) {
     if (this.props.filter !== prevProps.filter)
-      fetchTodos(this.props.filter).then(todos => {
-        console.log(this.props.filter, 'hahaha', todos);
-      });
+      this.fetchData()
+  }
+  fetchData() {
+    const {filter,receiveTodos} = this.props;
+    fetchTodos(filter).then(todos => {
+      receiveTodos(filter,todos);
+    });
   }
   render() {
     return <TodoList {...this.props}/>
   }
-};
+}
 import {connect} from 'react-redux'
 //将上面两个函数发送给connect方法，connect方法会生成TodoList的包装组件
 //就像上面被注释掉的部分
