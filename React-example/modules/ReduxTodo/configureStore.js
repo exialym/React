@@ -1,7 +1,6 @@
 import todoAppReducer from './Reducers/todoAppReducer'
 import {createStore} from 'redux'
 import {loadState,saveState} from './localStorage'
-import {fetchTodos} from './api/index'
 const addLoggingToDispatch = (store) => {
   const rawDispatch = store.dispatch;
   return (action) => {
@@ -31,4 +30,3 @@ const configureStore = () => {
   return store;
 };
 export default configureStore;
-fetchTodos('SHOW_ALL').then(todos => console.log(todos));

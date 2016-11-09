@@ -1,5 +1,6 @@
 import React ,{Component}from 'react'
 import {getVisibleTodos} from '../Reducers/todoAppReducer'
+import {fetchTodos} from '../api/index'
 //Todo项子组件
 const Todo = ({onClick,completed,text})=>(
   <li onClick={onClick}
@@ -57,7 +58,8 @@ const TodoList = ({todos, onTodoClick}) => (
 //mapStateToProps会订阅 Store，每当state更新的时候，就会自动执行，重新计算 UI 组件的参数，从而触发 UI 组件的重新渲染。
 //mapStateToProps的第一个参数总是state对象，还可以使用第二个参数，代表容器组件的props对象。
 const mapStateToProps = (state,ownProps) => ({
-  todos:getVisibleTodos(state)
+  todos:getVisibleTodos(state),
+  filter:state.visibilityFilter,
 });
 //mapDispatchToProps是connect函数的第二个参数，用来建立 UI 组件的参数到store.dispatch方法的映射
 //也就是说，它定义了哪些用户的操作应该当作 Action，传给 Store
@@ -83,12 +85,34 @@ mapDispatchToProps = {
     }
   }
 };
+// 原来直接在TodoList上使用connect生成包装组件
+// VisibleTodoList = connect(
+//   mapStateToProps,
+//   mapDispatchToProps
+// )(TodoList);
+//但是我们想使用VisibleTodoList的生命周期函数，connect函数直接生成的元素没法修改，于是再添一层包装
+class VisibleTodoList extends Component {
+  componentDidMount() {
+    fetchTodos(this.props.filter).then(todos => {
+      console.log(this.props.filter, 'hahaha', todos);
+    });
+  }
+  componentDidUpdate(prevProps) {
+    if (this.props.filter !== prevProps.filter)
+      fetchTodos(this.props.filter).then(todos => {
+        console.log(this.props.filter, 'hahaha', todos);
+      });
+  }
+  render() {
+    return <TodoList {...this.props}/>
+  }
+};
 import {connect} from 'react-redux'
 //将上面两个函数发送给connect方法，connect方法会生成TodoList的包装组件
 //就像上面被注释掉的部分
-const VisibleTodoList = connect(
+VisibleTodoList = connect(
   mapStateToProps,
   mapDispatchToProps
-)(TodoList)
+)(VisibleTodoList);
 /*********************************Todolist容器完*************************************/
 export default VisibleTodoList;
