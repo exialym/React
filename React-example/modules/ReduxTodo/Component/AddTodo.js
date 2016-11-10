@@ -1,12 +1,6 @@
-import React ,{Component}from 'react'
-import {v4} from 'node-uuid'
-//使用Action Creater，一个应用的action是固定的，使用creater来产生各个实际的action会标准且方便
-const addTodo = (text) => ({
-  type:'ADD_TODO',
-  text:text,
-  //使用这个方法产生唯一ID
-  id: v4(),
-});
+import React from 'react'
+import {addTodo} from '../actions'
+
 //add todo子组件，这里的第二个参数就是环境变量
 const AddTodo = (props,{store}) => {
   let input;

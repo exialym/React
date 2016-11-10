@@ -1,4 +1,5 @@
-import React ,{Component}from 'react'
+import React, { Component } from 'react'
+import {setFilter} from '../actions'
 //Filter子组件
 const Link = ({active,children,onClick}) => {
   if (active) {
@@ -32,10 +33,7 @@ class FilterLink extends Component {
           props.filter===state.visibilityFilter
         }
         onClick={() => {
-          store.dispatch({
-            type:'SET_FILTER',
-            filter:props.filter,
-          })
+          store.dispatch(setFilter(props.filter));
         }}
       >
         {props.children}

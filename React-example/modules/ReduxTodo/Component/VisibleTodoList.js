@@ -1,5 +1,6 @@
 import React ,{Component}from 'react'
 import {getVisibleTodos} from '../Reducers/todoAppReducer'
+import {toggleTodo, receiveTodos} from '../actions'
 import {fetchTodos} from '../api/index'
 //Todo项子组件
 const Todo = ({onClick,completed,text})=>(
@@ -68,10 +69,10 @@ const mapStateToProps = (state,ownProps) => ({
 //返回一个对象，该对象的每个键值对都是一个映射，定义了 UI 组件的参数怎样发出 Action。
 var mapDispatchToProps = (dispatch,ownProps) => ({
   onTodoClick(id) {
-    dispatch({
-      type:'TOGGLE_TODO',
-      id:id,
-    })
+    dispatch(toggleTodo(id));
+  },
+  receiveTodos(filter,todos) {
+    dispatch(receiveTodos(filter,todos));
   }
 });
 //如果mapDispatchToProps是一个对象
@@ -79,16 +80,9 @@ var mapDispatchToProps = (dispatch,ownProps) => ({
 //返回的 Action 会由 Redux 自动发出
 mapDispatchToProps = {
   onTodoClick: (id) => {
-    return {
-      type: 'TOGGLE_TODO',
-      id: id
-    }
+    return toggleTodo(id);
   },
-  receiveTodos: (filter, response) => ({
-    type:'RECEIVE_TODOS',
-    filter,
-    response
-  })
+  receiveTodos
 };
 // 原来直接在TodoList上使用connect生成包装组件
 // VisibleTodoList = connect(
