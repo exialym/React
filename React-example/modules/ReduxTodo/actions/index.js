@@ -1,4 +1,5 @@
 import {v4} from 'node-uuid'
+import * as api from '../api'
 
 //使用Action Creater，一个应用的action是固定的，使用creater来产生各个实际的action会标准且方便
 export const addTodo = (text) => ({
@@ -18,8 +19,15 @@ export const toggleTodo = (id) => ({
   id,
 });
 
-export const receiveTodos = (filter, response) => ({
+const receiveTodos = (filter, response) => ({
   type:'RECEIVE_TODOS',
   filter,
   response
 });
+
+//一个异步的Action Creater，这个Action Creater返回一个Promise对象
+//普通的dispatch函数并不能处理这个对象，需要对store的dispatch函数进行包装
+export const fetchTodos = (filter) =>
+  api.fetchTodos(filter).then(response =>
+    receiveTodos(filter,response)
+  );

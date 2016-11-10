@@ -1,7 +1,6 @@
 import React ,{Component}from 'react'
 import {getVisibleTodos} from '../Reducers/todoAppReducer'
-import {toggleTodo, receiveTodos} from '../actions'
-import {fetchTodos} from '../api/index'
+import {toggleTodo, fetchTodos} from '../actions'
 //Todo项子组件
 const Todo = ({onClick,completed,text})=>(
   <li onClick={onClick}
@@ -72,7 +71,7 @@ var mapDispatchToProps = (dispatch,ownProps) => ({
     dispatch(toggleTodo(id));
   },
   receiveTodos(filter,todos) {
-    dispatch(receiveTodos(filter,todos));
+    dispatch(fetchTodos(filter,todos));
   }
 });
 //如果mapDispatchToProps是一个对象
@@ -82,7 +81,8 @@ mapDispatchToProps = {
   onTodoClick: (id) => {
     return toggleTodo(id);
   },
-  receiveTodos
+  //这是一个异步的action哦
+  fetchTodos
 };
 // 原来直接在TodoList上使用connect生成包装组件
 // VisibleTodoList = connect(
@@ -99,10 +99,8 @@ class VisibleTodoList extends Component {
       this.fetchData()
   }
   fetchData() {
-    const {filter,receiveTodos} = this.props;
-    fetchTodos(filter).then(todos => {
-      receiveTodos(filter,todos);
-    });
+    const {filter,fetchTodos} = this.props;
+    fetchTodos(filter);
   }
   render() {
     return <TodoList {...this.props}/>
