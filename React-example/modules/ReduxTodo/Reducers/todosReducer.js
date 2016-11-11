@@ -8,28 +8,57 @@ import todoReducer from './todoReducer';
 //byId中存着所有的todo
 const byId = (state = {},action) => {
   switch (action.type) {
-    case 'ADD_TODO':
-    case 'TOGGLE_TODO':
-      return {
-        ...state,
-        [action.id]: todoReducer(state[action.id], action),
-      };
+    case 'RECEIVE_TODOS':
+      const nextState = {...state};
+      action.response.forEach(todo => {
+        nextState[todo.id] = todo;
+      });
+      return nextState;
     default:
       return state;
   }
 };
-//这里存着所有的todo的id，当添加时id同时添加到这个数组中
+//这里存着所有的todo的id
 const allIds = (state = [], action) => {
+  if (action.filter !== 'SHOW_ALL')
+    return state;
   switch (action.type) {
-    case 'ADD_TODO':
-      return [...state, action.id];
+    case 'RECEIVE_TODOS':
+      return action.response.map(todo => todo.id);
     default:
       return state;
   }
 };
+//这里存着所有未完成的todo的id
+const activeIds = (state = [], action) => {
+  if (action.filter !== 'SHOW_ACTIVE')
+    return state;
+  switch (action.type) {
+    case 'RECEIVE_TODOS':
+      return action.response.map(todo => todo.id);
+    default:
+      return state;
+  }
+};
+//这里存着所有已完成的todo的id
+const completedIds = (state = [], action) => {
+  if (action.filter !== 'SHOW_COMPLETED')
+    return state;
+  switch (action.type) {
+    case 'RECEIVE_TODOS':
+      return action.response.map(todo => todo.id);
+    default:
+      return state;
+  }
+};
+const idsByFilter = combineReducers({
+  SHOW_ALL:allIds,
+  SHOW_ACTIVE:activeIds,
+  SHOW_COMPLETED:completedIds,
+});
 const todosReducer = combineReducers({
   byId,
-  allIds,
+  idsByFilter,
 });
 export default todosReducer;
 
@@ -39,15 +68,6 @@ const getAllTodos = (state) =>
 //这种函数通常被成为选择器，它们从state中筛选出我们要的
 //这里的state对应的是todosReducer的state，有byid和allid属性
 export const getVisibleTodos = (state,filter) => {
-  const allTodos = getAllTodos(state);
-  switch (filter) {
-    case 'SHOW_ALL':
-      return allTodos;
-    case 'SHOW_ACTIVE':
-      return allTodos.filter(t=>!t.completed);
-    case 'SHOW_COMPLETED':
-      return allTodos.filter(t=>t.completed);
-    default:
-      return new Error(`Unknown filter:${filter}.`);
-  }
+  const ids = state.idsByFilter[filter];
+  return ids.map(id => state.byId[id]);
 };
