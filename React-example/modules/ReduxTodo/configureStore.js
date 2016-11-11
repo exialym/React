@@ -1,5 +1,5 @@
 import todoAppReducer from './Reducers/todoAppReducer'
-import {createStore} from 'redux'
+import {createStore, applyMiddleware} from 'redux'
 import {loadState,saveState} from './localStorage'
 const logging = (store) => (next) => (action) => {
   console.group(action.type);
@@ -18,6 +18,7 @@ const promise = (store) => (next) => (action) => {
     return action.then(next);
   return next(action);
 };
+//这个函数其实就是applyMiddleware的简化版
 const warpDispatchWithMiddlewares = (store, middlewares) => {
   //由于我们中间件数组中中间件的顺序是是Action流过中间件的顺序
   //那么处理这些中间件的顺序就是反过来的
@@ -30,9 +31,6 @@ const warpDispatchWithMiddlewares = (store, middlewares) => {
 }
 const configureStore = () => {
   const persistedInitialState = loadState();
-  //creatStore可以接受第2个参数，这是一个对象，用来指定state的初始状态，可以部分指定，也可以全部指定
-  //未指定的state属性将继续使用reducer中传入的默认值
-  const store=createStore(todoAppReducer,persistedInitialState);
   //我们将两个对dispatch做处理的中间件放在一个中间件数组里
   //中间件放置的顺序将是action流过这些中间件的顺序
   //这样的情况下处理中间件数组的函数warpDispatchWithMiddlewares就要多做一些处理
@@ -40,6 +38,12 @@ const configureStore = () => {
   if (process.env.NODE_ENV !== 'production') {
     middlewares.push(logging);
   }
+  //creatStore可以接受第2个参数，这是一个对象，用来指定state的初始状态，可以部分指定，也可以全部指定
+  //未指定的state属性将继续使用reducer中传入的默认值
+  //还可以接受第三个参数，这个参数就是应用中间件的函数
+  //const store=createStore(todoAppReducer,persistedInitialState,applyMiddleware(...middlewares));
+  //还是先用自己的吧～
+  const store=createStore(todoAppReducer,persistedInitialState);
   warpDispatchWithMiddlewares(store, middlewares);
   //每当store有变化，就持久化到localStorage里
   store.subscribe(()=>{
