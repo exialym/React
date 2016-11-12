@@ -18,56 +18,38 @@ const byId = (state = {},action) => {
       return state;
   }
 };
-//这里存着所有的todo的id
-const allIds = (state = [], action) => {
-  if (action.filter !== 'SHOW_ALL')
-    return state;
-  switch (action.type) {
-    case 'RECEIVE_TODOS':
-      return action.response.map(todo => todo.id);
-    default:
+const crestIdListWithFilter = (filter) => {
+  return (state = [], action) => {
+    if (action.filter !== filter)
       return state;
-  }
-};
-//这里存着所有未完成的todo的id
-const activeIds = (state = [], action) => {
-  if (action.filter !== 'SHOW_ACTIVE')
-    return state;
-  switch (action.type) {
-    case 'RECEIVE_TODOS':
-      return action.response.map(todo => todo.id);
-    default:
-      return state;
-  }
-};
-//这里存着所有已完成的todo的id
-const completedIds = (state = [], action) => {
-  if (action.filter !== 'SHOW_COMPLETED')
-    return state;
-  switch (action.type) {
-    case 'RECEIVE_TODOS':
-      return action.response.map(todo => todo.id);
-    default:
-      return state;
-  }
-};
-const idsByFilter = combineReducers({
-  SHOW_ALL:allIds,
-  SHOW_ACTIVE:activeIds,
-  SHOW_COMPLETED:completedIds,
+    switch (action.type) {
+      case 'RECEIVE_TODOS':
+        return action.response.map(todo => todo.id);
+      default:
+        return state;
+    }
+  };
+}
+
+
+const listByFilter = combineReducers({
+  //这里存着所有的todo的id
+  SHOW_ALL:crestIdListWithFilter('SHOW_ALL'),
+  //这里存着所有未完成的todo的id
+  SHOW_ACTIVE:crestIdListWithFilter('SHOW_ACTIVE'),
+  //这里存着所有已完成的todo的id
+  SHOW_COMPLETED:crestIdListWithFilter('SHOW_COMPLETED'),
 });
 const todosReducer = combineReducers({
   byId,
-  idsByFilter,
+  listByFilter,
 });
 export default todosReducer;
 
-const getAllTodos = (state) =>
-  state.allIds.map(id => state.byId[id]);
 
 //这种函数通常被成为选择器，它们从state中筛选出我们要的
 //这里的state对应的是todosReducer的state，有byid和allid属性
 export const getVisibleTodos = (state,filter) => {
-  const ids = state.idsByFilter[filter];
+  const ids = state.listByFilter[filter];
   return ids.map(id => state.byId[id]);
 };
