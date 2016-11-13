@@ -1,6 +1,6 @@
 import React ,{Component}from 'react'
-import {getVisibleTodos} from '../Reducers/todoAppReducer'
-import {toggleTodo, fetchTodos} from '../actions'
+import {getVisibleTodos,getIsFetching} from '../Reducers/todoAppReducer'
+import {toggleTodo, fetchTodos, requestTodos} from '../actions'
 //Todo项子组件
 const Todo = ({onClick,completed,text})=>(
   <li onClick={onClick}
@@ -59,6 +59,7 @@ const TodoList = ({todos, onTodoClick}) => (
 //mapStateToProps的第一个参数总是state对象，还可以使用第二个参数，代表容器组件的props对象。
 const mapStateToProps = (state,ownProps) => ({
   todos:getVisibleTodos(state),
+  isFetching:getIsFetching(state),
   filter:state.visibilityFilter,
 });
 //mapDispatchToProps是connect函数的第二个参数，用来建立 UI 组件的参数到store.dispatch方法的映射
@@ -70,20 +71,24 @@ var mapDispatchToProps = (dispatch,ownProps) => ({
   onTodoClick(id) {
     dispatch(toggleTodo(id));
   },
-  receiveTodos(filter,todos) {
+  fetchTodos(filter,todos) {
     dispatch(fetchTodos(filter,todos));
+  },
+  requestTodos(filter) {
+    dispatch(requestTodos(filter));
   }
 });
 //如果mapDispatchToProps是一个对象
 //它的每个键名也是对应 UI 组件的同名参数，键值应该是一个函数，会被当作 Action creator
 //返回的 Action 会由 Redux 自动发出
-mapDispatchToProps = {
-  onTodoClick: (id) => {
-    return toggleTodo(id);
-  },
-  //这是一个异步的action哦
-  fetchTodos
-};
+// mapDispatchToProps = {
+//   onTodoClick: (id) => {
+//     return toggleTodo(id);
+//   },
+//   //这是一个异步的action哦
+//   fetchTodos,
+//   requestTodos
+// };
 // 原来直接在TodoList上使用connect生成包装组件
 // VisibleTodoList = connect(
 //   mapStateToProps,
@@ -99,10 +104,14 @@ class VisibleTodoList extends Component {
       this.fetchData()
   }
   fetchData() {
-    const {filter,fetchTodos} = this.props;
+    const {filter,fetchTodos,requestTodos} = this.props;
+    requestTodos(filter);
     fetchTodos(filter);
   }
   render() {
+    if (this.props.isFetching && !this.props.todos.length) {
+      return <p>Loading...</p>
+    }
     return <TodoList {...this.props}/>
   }
 }

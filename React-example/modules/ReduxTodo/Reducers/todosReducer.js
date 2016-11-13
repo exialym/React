@@ -19,7 +19,7 @@ const byId = (state = {},action) => {
   }
 };
 const crestIdListWithFilter = (filter) => {
-  return (state = [], action) => {
+  const ids =  (state = [], action) => {
     if (action.filter !== filter)
       return state;
     switch (action.type) {
@@ -29,6 +29,22 @@ const crestIdListWithFilter = (filter) => {
         return state;
     }
   };
+  const isFetching = (state = false, action) => {
+    if (action.filter !== filter)
+      return state;
+    switch (action.type) {
+      case 'REQUEST_TODOS':
+        return true;
+      case 'RECEIVE_TODOS':
+        return false;
+      default :
+        return state;
+    }
+  };
+  return combineReducers({
+    ids,
+    isFetching,
+  });
 }
 
 
@@ -50,6 +66,9 @@ export default todosReducer;
 //这种函数通常被成为选择器，它们从state中筛选出我们要的
 //这里的state对应的是todosReducer的state，有byid和allid属性
 export const getVisibleTodos = (state,filter) => {
-  const ids = state.listByFilter[filter];
+  const ids = state.listByFilter[filter].ids;
   return ids.map(id => state.byId[id]);
+};
+export const getIsFetching = (state,filter) => {
+  return state.listByFilter[filter].isFetching;
 };

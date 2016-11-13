@@ -26,3 +26,5 @@ const todoAppReducer = myCombineReducers({
 export default todoAppReducer;
 export const getVisibleTodos = (state) =>
   fromTodos.getVisibleTodos(state.todos,state.visibilityFilter);
+export const getIsFetching = (state) =>
+  fromTodos.getIsFetching(state.todos,state.visibilityFilter);
