@@ -1,6 +1,7 @@
 import React ,{Component}from 'react'
-import {getVisibleTodos,getIsFetching} from '../Reducers/todoAppReducer'
+import {getVisibleTodos, getIsFetching, getErrorMessage} from '../Reducers/todoAppReducer'
 import {toggleTodo, fetchTodos} from '../actions'
+import FetchError from './FetchError'
 //Todo项子组件
 const Todo = ({onClick,completed,text})=>(
   <li onClick={onClick}
@@ -60,6 +61,7 @@ const TodoList = ({todos, onTodoClick}) => (
 const mapStateToProps = (state,ownProps) => ({
   todos:getVisibleTodos(state),
   isFetching:getIsFetching(state),
+  errorMessage:getErrorMessage(state),
   filter:state.visibilityFilter,
 });
 //mapDispatchToProps是connect函数的第二个参数，用来建立 UI 组件的参数到store.dispatch方法的映射
@@ -104,9 +106,14 @@ class VisibleTodoList extends Component {
     fetchTodos(filter);
   }
   render() {
-    if (this.props.isFetching && !this.props.todos.length) {
+    const {isFetching,todos,errorMessage} = this.props;
+    if (isFetching && !todos.length) {
       return <p>Loading...</p>
     }
+    if (errorMessage)
+      return (
+        <FetchError message = {errorMessage} onRetry = {() => this.fetchData()}/>
+      );
     return <TodoList {...this.props}/>
   }
 }

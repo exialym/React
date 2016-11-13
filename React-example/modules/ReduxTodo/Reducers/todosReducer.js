@@ -42,14 +42,29 @@ const crestIdListWithFilter = (filter) => {
     switch (action.type) {
       case 'REQUEST_TODOS':
         return true;
+      case 'FAIL_REQUEST_TODOS':
       case 'RECEIVE_TODOS':
         return false;
       default :
         return state;
     }
   };
+  const errorMessage = (state = null, action) => {
+    if (action.filter !== filter)
+      return state;
+    switch (action.type) {
+      case 'REQUEST_TODOS':
+      case 'RECEIVE_TODOS':
+        return null;
+      case 'FAIL_REQUEST_TODOS':
+        return action.message;
+      default :
+        return state;
+    }
+  };
   return combineReducers({
     ids,
+    errorMessage,
     isFetching,
   });
 }
@@ -78,4 +93,7 @@ export const getVisibleTodos = (state,filter) => {
 };
 export const getIsFetching = (state,filter) => {
   return state.listByFilter[filter].isFetching;
+};
+export const getErrorMessage = (state,filter) => {
+  return state.listByFilter[filter].errorMessage;
 };

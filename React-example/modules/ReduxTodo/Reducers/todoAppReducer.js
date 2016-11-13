@@ -28,3 +28,5 @@ export const getVisibleTodos = (state) =>
   fromTodos.getVisibleTodos(state.todos,state.visibilityFilter);
 export const getIsFetching = (state) =>
   fromTodos.getIsFetching(state.todos,state.visibilityFilter);
+export const getErrorMessage = (state) =>
+  fromTodos.getErrorMessage(state.todos,state.visibilityFilter);
