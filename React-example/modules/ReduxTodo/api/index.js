@@ -19,7 +19,7 @@ const delay = (ms) =>
   new Promise(resolve => setTimeout(resolve, ms));
 
 export const fetchTodos = (filter) =>
-  delay(1000).then(() => {
+  delay(5000).then(() => {
     switch (filter) {
       case 'SHOW_ALL':
         return fakeDatabase.todos;

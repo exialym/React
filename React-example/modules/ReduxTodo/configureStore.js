@@ -31,7 +31,7 @@ const warpDispatchWithMiddlewares = (store, middlewares) => {
 }
 //这个中间件检测发来的action是不是一个函数，如果是的话就说明我们想进行一组action的dispatch
 const thunk = (store) => (next) => (action) =>
-  typeof action === 'function' ? action(store.dispatch) : next(action);
+  typeof action === 'function' ? action(store.dispatch,store.getState) : next(action);
 
 const configureStore = () => {
   const persistedInitialState = loadState();
