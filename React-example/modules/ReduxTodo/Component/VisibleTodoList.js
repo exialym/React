@@ -1,6 +1,6 @@
 import React ,{Component}from 'react'
 import {getVisibleTodos,getIsFetching} from '../Reducers/todoAppReducer'
-import {toggleTodo, fetchTodos, requestTodos} from '../actions'
+import {toggleTodo, fetchTodos} from '../actions'
 //Todo项子组件
 const Todo = ({onClick,completed,text})=>(
   <li onClick={onClick}
@@ -74,21 +74,17 @@ var mapDispatchToProps = (dispatch,ownProps) => ({
   fetchTodos(filter,todos) {
     dispatch(fetchTodos(filter,todos));
   },
-  requestTodos(filter) {
-    dispatch(requestTodos(filter));
-  }
 });
 //如果mapDispatchToProps是一个对象
 //它的每个键名也是对应 UI 组件的同名参数，键值应该是一个函数，会被当作 Action creator
 //返回的 Action 会由 Redux 自动发出
-// mapDispatchToProps = {
-//   onTodoClick: (id) => {
-//     return toggleTodo(id);
-//   },
-//   //这是一个异步的action哦
-//   fetchTodos,
-//   requestTodos
-// };
+mapDispatchToProps = {
+  onTodoClick: (id) => {
+    return toggleTodo(id);
+  },
+  //这是一个异步的action哦
+  fetchTodos,
+};
 // 原来直接在TodoList上使用connect生成包装组件
 // VisibleTodoList = connect(
 //   mapStateToProps,
@@ -104,8 +100,7 @@ class VisibleTodoList extends Component {
       this.fetchData()
   }
   fetchData() {
-    const {filter,fetchTodos,requestTodos} = this.props;
-    requestTodos(filter);
+    const {filter,fetchTodos} = this.props;
     fetchTodos(filter);
   }
   render() {

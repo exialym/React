@@ -7,13 +7,20 @@ import todoReducer from './todoReducer';
 //这样利于同步和管理
 //byId中存着所有的todo
 const byId = (state = {},action) => {
+  const nextState = {...state};
   switch (action.type) {
     case 'RECEIVE_TODOS':
-      const nextState = {...state};
       action.response.forEach(todo => {
         nextState[todo.id] = todo;
       });
       return nextState;
+    // case 'ADD_TODO':
+    //   var temp = todoReducer(null,action);
+    //   nextState[temp.id] = temp;
+    //   return nextState;
+    // case 'TOGGLE_TODO':
+    //   nextState[action.id] = todoReducer(nextState[action.id],action);
+    //   return nextState;
     default:
       return state;
   }

@@ -25,14 +25,17 @@ const receiveTodos = (filter, response) => ({
   response
 });
 
-//一个异步的Action Creater，这个Action Creater返回一个Promise对象
-//普通的dispatch函数并不能处理这个对象，需要对store的dispatch函数进行包装
-export const fetchTodos = (filter) =>
-  api.fetchTodos(filter).then(response =>
-    receiveTodos(filter,response)
-  );
-
-export const requestTodos = (filter) => ({
+const requestTodos = (filter) => ({
   type:'REQUEST_TODOS',
   filter,
 });
+//一个异步的Action Creater，这个Action Creater返回一个Promise对象
+//普通的dispatch函数并不能处理这个对象，需要对store的dispatch函数进行包装
+export const fetchTodos = (filter) => (dispatch) => {
+  dispatch(requestTodos(filter));
+  return api.fetchTodos(filter).then(response =>
+    dispatch(receiveTodos(filter,response))
+  );
+};
+
+

@@ -29,12 +29,16 @@ const warpDispatchWithMiddlewares = (store, middlewares) => {
     store.dispatch = middleware(store)(store.dispatch)
   );
 }
+//这个中间件检测发来的action是不是一个函数，如果是的话就说明我们想进行一组action的dispatch
+const thunk = (store) => (next) => (action) =>
+  typeof action === 'function' ? action(store.dispatch) : next(action);
+
 const configureStore = () => {
   const persistedInitialState = loadState();
   //我们将两个对dispatch做处理的中间件放在一个中间件数组里
   //中间件放置的顺序将是action流过这些中间件的顺序
   //这样的情况下处理中间件数组的函数warpDispatchWithMiddlewares就要多做一些处理
-  const middlewares = [promise];
+  const middlewares = [thunk];
   if (process.env.NODE_ENV !== 'production') {
     middlewares.push(logging);
   }
