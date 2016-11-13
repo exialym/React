@@ -1,9 +1,12 @@
 import * as api from '../api'
 import {getIsFetching} from '../Reducers/todoAppReducer'
+import { normalize } from 'normalizr'
+import * as schema from './schema'
 
 //使用Action Creater，一个应用的action是固定的，使用creater来产生各个实际的action会标准且方便
 export const addTodo = (text) => (dispatch) =>
   api.addTodo(text).then(response => {
+    console.log('normalized response',normalize(response,schema.todo));
     dispatch({
       type: 'ADD_TODO_SUCCESS',
       response,
@@ -44,8 +47,13 @@ export const fetchTodos = (filter) => (dispatch,getState) => {
   }
   dispatch(requestTodos(filter));
   return api.fetchTodos(filter).then(
-    response => dispatch(receiveTodos(filter,response)),
-    error => dispatch(failRequestTodos(filter,error.message||'Something bad happened'))
+    response => {
+      console.log('normalized response',normalize(response,schema.arrayOfTodos));
+      dispatch(receiveTodos(filter,response));
+    },
+    error => {
+      dispatch(failRequestTodos(filter, error.message || 'Something bad happened'))
+    }
   );
 };
 
