@@ -18,11 +18,14 @@ export const setFilter = (filter) => ({
   filter,
 });
 
-export const toggleTodo = (id) => ({
-  type:'TOGGLE_TODO',
-  id,
-});
-
+export const toggleTodo = (id) => (dispatch) => 
+  api.toggleTodo(id).then(response => {
+    dispatch({
+      type: 'TOGGLE_TODO_SUCCESS',
+      response,
+    });
+  });
+    
 const receiveTodos = (filter, response) => ({
   type:'RECEIVE_TODOS',
   filter,

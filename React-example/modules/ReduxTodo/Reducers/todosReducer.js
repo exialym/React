@@ -19,9 +19,6 @@ const byId = (state = {},action) => {
         ...state,
         [action.response.id]: action.response,
       };
-    case 'TOGGLE_TODO':
-      nextState[action.id] = todoReducer(nextState[action.id],action);
-      return nextState;
     default:
       return state;
   }
@@ -37,6 +34,12 @@ const crestIdListWithFilter = (filter) => {
         return filter !== 'SHOW_COMPLETED' ?
           [...state, action.response.id] :
           state;
+      case 'TOGGLE_TODO_SUCCESS':
+        const completed = action.response.completed;
+        if ((completed&&filter==='SHOW_ACTIVE')||(!completed&&filter==='SHOW_COMPLETED')) {
+          return state.filter(id => id != action.response.id);
+        }
+        return state;
       default:
         return state;
     }
