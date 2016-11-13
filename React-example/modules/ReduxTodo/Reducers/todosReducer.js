@@ -7,31 +7,36 @@ import todoReducer from './todoReducer';
 //这样利于同步和管理
 //byId中存着所有的todo
 const byId = (state = {},action) => {
-  const nextState = {...state};
   switch (action.type) {
     case 'RECEIVE_TODOS':
+      const nextState = {...state};
       action.response.forEach(todo => {
         nextState[todo.id] = todo;
       });
       return nextState;
-    // case 'ADD_TODO':
-    //   var temp = todoReducer(null,action);
-    //   nextState[temp.id] = temp;
-    //   return nextState;
-    // case 'TOGGLE_TODO':
-    //   nextState[action.id] = todoReducer(nextState[action.id],action);
-    //   return nextState;
+    case 'ADD_TODO_SUCCESS':
+      return {
+        ...state,
+        [action.response.id]: action.response,
+      };
+    case 'TOGGLE_TODO':
+      nextState[action.id] = todoReducer(nextState[action.id],action);
+      return nextState;
     default:
       return state;
   }
 };
 const crestIdListWithFilter = (filter) => {
   const ids =  (state = [], action) => {
-    if (action.filter !== filter)
-      return state;
     switch (action.type) {
       case 'RECEIVE_TODOS':
-        return action.response.map(todo => todo.id);
+        return action.filter === filter ?
+          action.response.map(todo => todo.id) :
+          state;
+      case 'ADD_TODO_SUCCESS':
+        return filter !== 'SHOW_COMPLETED' ?
+          [...state, action.response.id] :
+          state;
       default:
         return state;
     }

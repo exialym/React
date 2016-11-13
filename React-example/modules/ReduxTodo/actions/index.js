@@ -1,14 +1,14 @@
-import {v4} from 'node-uuid'
 import * as api from '../api'
 import {getIsFetching} from '../Reducers/todoAppReducer'
 
 //使用Action Creater，一个应用的action是固定的，使用creater来产生各个实际的action会标准且方便
-export const addTodo = (text) => ({
-  type:'ADD_TODO',
-  text,
-  //使用这个方法产生唯一ID
-  id: v4(),
-});
+export const addTodo = (text) => (dispatch) =>
+  api.addTodo(text).then(response => {
+    dispatch({
+      type: 'ADD_TODO_SUCCESS',
+      response,
+    });
+  });
 
 export const setFilter = (filter) => ({
   type:'SET_FILTER',
