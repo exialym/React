@@ -1,4 +1,5 @@
 import express from 'express'
+var router=express.Router();
 import path from 'path'
 import React from 'react'
 // we'll use this to render our app to an html string
@@ -6,14 +7,20 @@ import { renderToString } from 'react-dom/server'
 // and these to match the url to routes and then render
 import { match, RouterContext } from 'react-router'
 import routes from './modules/routers'
+import mongoose from 'mongoose'
 
 var app = express()
+//导入定义的模型
+global.dbHandle=require('./modules/ReduxTodo/api/db');
+//连接数据库，默认端口号是27017，todolist是自己的数据库名称
+global.db=mongoose.connect('mongodb://localhost:27017/todolist');
+var todo=mongoose.model('Todo');
 
 // serve our static stuff like index.css
 app.use(express.static(path.join(__dirname, 'public'), {index: false}))
 
 // send all requests to index.html so browserHistory in React Router works
-app.get('*', function (req, res) {
+app.get('/www/*', function (req, res) {
     // match the routes to the url
     console.log("getting");
     match({ routes: routes, location: req.url }, (err, redirect, props) => {
@@ -43,7 +50,25 @@ app.get('*', function (req, res) {
             res.status(404).send('Not Found')
         }
     })
-})
+});
+app.get('/db/articles',function(req,res){
+    //可以使用model创建一个实体
+    var todoItem=new todo({
+        id:'123',
+        text:'hello',
+        completed:false
+    });
+//然后保存到数据库
+    todoItem.save();
+    todo.find({},function(err,results){
+        if(err){
+            console.log('error message',err);
+            return;
+        }
+        console.log(results);
+        res.json(results);
+    })
+});
 function renderPage(appHtml) {
     return `
     <!doctype html public="storage">

@@ -9,15 +9,15 @@ import Todo from './Flex/main'
 import Counter from './ReduxCounter/main'
 import ReduxTodo from './ReduxTodo/main'
 module.exports = (
-	<Route path="/" component={App}>
+	<Route path="/www" component={App}>
 		<IndexRoute component={Home}/>
-		<Route path="/repos" component={Repos}>
-			<Route path="/repos/:userName/:repoName" component={Repo}/>
+		<Route path="/www/repos" component={Repos}>
+			<Route path="/www/repos/:userName/:repoName" component={Repo}/>
 		</Route>
-		<Route path="/about" component={About}/>
-		<Route path="/redirect" onEnter={({path}, replace) => replace("/repos")}/>
-		<Route path="/todo" component={Todo}/>
-		<Route path="/counter" component={Counter}/>
-    <Route path="/reduxTodo" component={ReduxTodo}/>
+		<Route path="/www/about" component={About}/>
+		<Route path="/www/redirect" onEnter={({path}, replace) => replace("/www/repos")}/>
+		<Route path="/www/todo" component={Todo}/>
+		<Route path="/www/counter" component={Counter}/>
+    <Route path="/www/reduxTodo" component={ReduxTodo}/>
 	</Route>
 )

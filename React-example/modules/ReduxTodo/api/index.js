@@ -1,4 +1,5 @@
 import {v4} from 'node-uuid';
+import fetch from 'isomorphic-fetch';
 //这里模拟一个假的数据库，从这个数据库读数据时会是异步的。
 const fakeDatabase = {
   todos: [{
@@ -19,11 +20,21 @@ const delay = (ms) =>
   new Promise(resolve => setTimeout(resolve, ms));
 
 export const fetchTodos = (filter) =>
+  // new Promise.then(() => {
+  //
+  // });
   delay(500).then(() => {
     if (Math.random() > 0.8) {
       throw new Error('connect failed');
     }
-
+    try {
+      //express后台中需要建立'/articles'路由，来处理请求数据
+      fetch('/db/articles').then((res) => {
+        console.log('aaaaaa',res.json());
+      });
+    } catch (err) {
+      console.log(err);
+    }
     switch (filter) {
       case 'SHOW_ALL':
         return fakeDatabase.todos;

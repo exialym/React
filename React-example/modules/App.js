@@ -9,13 +9,13 @@ export default React.createClass({
         <div className="content">
           <div className="nav">
             <ul role="nav">
-              <li><NavLink to="/" onlyActiveOnIndex={true}>Home</NavLink></li>
-              <li><NavLink to="/repos">Blogs</NavLink></li>
-              <li><NavLink to="/about">About</NavLink></li>
-              <li><NavLink to="/redirect">Redirect</NavLink></li>
-              <li><NavLink to="/todo">FlexTodoList</NavLink></li>
-              <li><NavLink to="/counter">ReduxCounter</NavLink></li>
-              <li><NavLink to="/reduxTodo">ReduxTodo</NavLink></li>
+              <li><NavLink to="/www/" onlyActiveOnIndex={true}>Home</NavLink></li>
+              <li><NavLink to="/www/repos">Blogs</NavLink></li>
+              <li><NavLink to="/www/about">About</NavLink></li>
+              <li><NavLink to="/www/redirect">Redirect</NavLink></li>
+              <li><NavLink to="/www/todo">FlexTodoList</NavLink></li>
+              <li><NavLink to="/www/counter">ReduxCounter</NavLink></li>
+              <li><NavLink to="/www/reduxTodo">ReduxTodo</NavLink></li>
             </ul>
           </div>
           <div className="middle">

@@ -66,18 +66,30 @@
 
 	var _routers2 = _interopRequireDefault(_routers);
 
+	var _mongoose = __webpack_require__(43);
+
+	var _mongoose2 = _interopRequireDefault(_mongoose);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+	var router = _express2.default.Router();
+	// we'll use this to render our app to an html string
+
 	// and these to match the url to routes and then render
+
+
 	var app = (0, _express2.default)();
+	//导入定义的模型
+	global.dbHandle = __webpack_require__(44);
+	//连接数据库，默认端口号是27017，todolist是自己的数据库名称
+	global.db = _mongoose2.default.connect('mongodb://localhost:27017/todolist');
+	var todo = _mongoose2.default.model('Todo');
 
 	// serve our static stuff like index.css
-
-	// we'll use this to render our app to an html string
 	app.use(_express2.default.static(_path2.default.join(__dirname, 'public'), { index: false }));
 
 	// send all requests to index.html so browserHistory in React Router works
-	app.get('*', function (req, res) {
+	app.get('/www/*', function (req, res) {
 	    // match the routes to the url
 	    console.log("getting");
 	    (0, _reactRouter.match)({ routes: _routers2.default, location: req.url }, function (err, redirect, props) {
@@ -106,6 +118,24 @@
 	            // no errors, no redirect, we just didn't match anything
 	            res.status(404).send('Not Found');
 	        }
+	    });
+	});
+	app.get('/db/articles', function (req, res) {
+	    //可以使用model创建一个实体
+	    var todoItem = new todo({
+	        id: '123',
+	        text: 'hello',
+	        completed: false
+	    });
+	    //然后保存到数据库
+	    todoItem.save();
+	    todo.find({}, function (err, results) {
+	        if (err) {
+	            console.log('error message', err);
+	            return;
+	        }
+	        console.log(results);
+	        res.json(results);
 	    });
 	});
 	function renderPage(appHtml) {
@@ -197,21 +227,21 @@
 
 	module.exports = _react2.default.createElement(
 		_reactRouter.Route,
-		{ path: '/', component: _App2.default },
+		{ path: '/www', component: _App2.default },
 		_react2.default.createElement(_reactRouter.IndexRoute, { component: _Home2.default }),
 		_react2.default.createElement(
 			_reactRouter.Route,
-			{ path: '/repos', component: _Repos2.default },
-			_react2.default.createElement(_reactRouter.Route, { path: '/repos/:userName/:repoName', component: _Repo2.default })
+			{ path: '/www/repos', component: _Repos2.default },
+			_react2.default.createElement(_reactRouter.Route, { path: '/www/repos/:userName/:repoName', component: _Repo2.default })
 		),
-		_react2.default.createElement(_reactRouter.Route, { path: '/about', component: _About2.default }),
-		_react2.default.createElement(_reactRouter.Route, { path: '/redirect', onEnter: function onEnter(_ref, replace) {
+		_react2.default.createElement(_reactRouter.Route, { path: '/www/about', component: _About2.default }),
+		_react2.default.createElement(_reactRouter.Route, { path: '/www/redirect', onEnter: function onEnter(_ref, replace) {
 				var path = _ref.path;
-				return replace("/repos");
+				return replace("/www/repos");
 			} }),
-		_react2.default.createElement(_reactRouter.Route, { path: '/todo', component: _main2.default }),
-		_react2.default.createElement(_reactRouter.Route, { path: '/counter', component: _main4.default }),
-		_react2.default.createElement(_reactRouter.Route, { path: '/reduxTodo', component: _main6.default })
+		_react2.default.createElement(_reactRouter.Route, { path: '/www/todo', component: _main2.default }),
+		_react2.default.createElement(_reactRouter.Route, { path: '/www/counter', component: _main4.default }),
+		_react2.default.createElement(_reactRouter.Route, { path: '/www/reduxTodo', component: _main6.default })
 	);
 
 /***/ },
@@ -263,7 +293,7 @@
 	              null,
 	              _react2.default.createElement(
 	                _NavLink2.default,
-	                { to: '/', onlyActiveOnIndex: true },
+	                { to: '/www/', onlyActiveOnIndex: true },
 	                'Home'
 	              )
 	            ),
@@ -272,7 +302,7 @@
 	              null,
 	              _react2.default.createElement(
 	                _NavLink2.default,
-	                { to: '/repos' },
+	                { to: '/www/repos' },
 	                'Blogs'
 	              )
 	            ),
@@ -281,7 +311,7 @@
 	              null,
 	              _react2.default.createElement(
 	                _NavLink2.default,
-	                { to: '/about' },
+	                { to: '/www/about' },
 	                'About'
 	              )
 	            ),
@@ -290,7 +320,7 @@
 	              null,
 	              _react2.default.createElement(
 	                _NavLink2.default,
-	                { to: '/redirect' },
+	                { to: '/www/redirect' },
 	                'Redirect'
 	              )
 	            ),
@@ -299,7 +329,7 @@
 	              null,
 	              _react2.default.createElement(
 	                _NavLink2.default,
-	                { to: '/todo' },
+	                { to: '/www/todo' },
 	                'FlexTodoList'
 	              )
 	            ),
@@ -308,7 +338,7 @@
 	              null,
 	              _react2.default.createElement(
 	                _NavLink2.default,
-	                { to: '/counter' },
+	                { to: '/www/counter' },
 	                'ReduxCounter'
 	              )
 	            ),
@@ -317,7 +347,7 @@
 	              null,
 	              _react2.default.createElement(
 	                _NavLink2.default,
-	                { to: '/reduxTodo' },
+	                { to: '/www/reduxTodo' },
 	                'ReduxTodo'
 	              )
 	            )
@@ -990,7 +1020,7 @@
 
 	var _TodoApp2 = _interopRequireDefault(_TodoApp);
 
-	var _configureStore = __webpack_require__(35);
+	var _configureStore = __webpack_require__(41);
 
 	var _configureStore2 = _interopRequireDefault(_configureStore);
 
@@ -1046,11 +1076,11 @@
 
 	var _Footer2 = _interopRequireDefault(_Footer);
 
-	var _VisibleTodoList = __webpack_require__(27);
+	var _VisibleTodoList = __webpack_require__(37);
 
 	var _VisibleTodoList2 = _interopRequireDefault(_VisibleTodoList);
 
-	var _AddTodo = __webpack_require__(33);
+	var _AddTodo = __webpack_require__(40);
 
 	var _AddTodo2 = _interopRequireDefault(_AddTodo);
 
@@ -1083,6 +1113,8 @@
 	var _react = __webpack_require__(3);
 
 	var _react2 = _interopRequireDefault(_react);
+
+	var _actions = __webpack_require__(27);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1153,10 +1185,7 @@
 	        {
 	          active: props.filter === state.visibilityFilter,
 	          onClick: function onClick() {
-	            store.dispatch({
-	              type: 'SET_FILTER',
-	              filter: props.filter
-	            });
+	            store.dispatch((0, _actions.setFilter)(props.filter));
 	          }
 	        },
 	        props.children
@@ -1207,6 +1236,508 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
+	exports.fetchTodos = exports.toggleTodo = exports.setFilter = exports.addTodo = undefined;
+
+	var _api = __webpack_require__(28);
+
+	var api = _interopRequireWildcard(_api);
+
+	var _todoAppReducer = __webpack_require__(31);
+
+	var _normalizr = __webpack_require__(35);
+
+	var _schema = __webpack_require__(36);
+
+	var schema = _interopRequireWildcard(_schema);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	//使用Action Creater，一个应用的action是固定的，使用creater来产生各个实际的action会标准且方便
+	var addTodo = exports.addTodo = function addTodo(text) {
+	  return function (dispatch) {
+	    return api.addTodo(text).then(function (response) {
+	      console.log('normalized response', (0, _normalizr.normalize)(response, schema.todo));
+	      dispatch({
+	        type: 'ADD_TODO_SUCCESS',
+	        response: response
+	      });
+	    });
+	  };
+	};
+
+	var setFilter = exports.setFilter = function setFilter(filter) {
+	  return {
+	    type: 'SET_FILTER',
+	    filter: filter
+	  };
+	};
+
+	var toggleTodo = exports.toggleTodo = function toggleTodo(id) {
+	  return function (dispatch) {
+	    return api.toggleTodo(id).then(function (response) {
+	      dispatch({
+	        type: 'TOGGLE_TODO_SUCCESS',
+	        response: response
+	      });
+	    });
+	  };
+	};
+
+	var receiveTodos = function receiveTodos(filter, response) {
+	  return {
+	    type: 'RECEIVE_TODOS',
+	    filter: filter,
+	    response: response
+	  };
+	};
+
+	var requestTodos = function requestTodos(filter) {
+	  return {
+	    type: 'REQUEST_TODOS',
+	    filter: filter
+	  };
+	};
+
+	var failRequestTodos = function failRequestTodos(filter, message) {
+	  return {
+	    type: 'FAIL_REQUEST_TODOS',
+	    message: message,
+	    filter: filter
+	  };
+	};
+	//一个异步的Action Creater，这个Action Creater返回一个Promise对象
+	//普通的dispatch函数并不能处理这个对象，需要对store的dispatch函数进行包装
+	var fetchTodos = exports.fetchTodos = function fetchTodos(filter) {
+	  return function (dispatch, getState) {
+	    if ((0, _todoAppReducer.getIsFetching)(getState(), filter)) {
+	      return Promise.resolve();
+	    }
+	    dispatch(requestTodos(filter));
+	    return api.fetchTodos(filter).then(function (response) {
+	      console.log('normalized response', (0, _normalizr.normalize)(response, schema.arrayOfTodos));
+	      dispatch(receiveTodos(filter, response));
+	    }, function (error) {
+	      dispatch(failRequestTodos(filter, error.message || 'Something bad happened'));
+	    });
+	  };
+	};
+
+/***/ },
+/* 28 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.toggleTodo = exports.addTodo = exports.fetchTodos = undefined;
+
+	var _nodeUuid = __webpack_require__(29);
+
+	var _isomorphicFetch = __webpack_require__(30);
+
+	var _isomorphicFetch2 = _interopRequireDefault(_isomorphicFetch);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	//这里模拟一个假的数据库，从这个数据库读数据时会是异步的。
+	var fakeDatabase = {
+	  todos: [{
+	    id: (0, _nodeUuid.v4)(),
+	    text: 'hey',
+	    completed: false
+	  }, {
+	    id: (0, _nodeUuid.v4)(),
+	    text: 'hello',
+	    completed: true
+	  }, {
+	    id: (0, _nodeUuid.v4)(),
+	    text: 'ha',
+	    completed: false
+	  }]
+	};
+	var delay = function delay(ms) {
+	  return new Promise(function (resolve) {
+	    return setTimeout(resolve, ms);
+	  });
+	};
+
+	var fetchTodos = exports.fetchTodos = function fetchTodos(filter) {
+	  return (
+	    // new Promise.then(() => {
+	    //
+	    // });
+	    delay(500).then(function () {
+	      if (Math.random() > 0.8) {
+	        throw new Error('connect failed');
+	      }
+	      try {
+	        //express后台中需要建立'/articles'路由，来处理请求数据
+	        (0, _isomorphicFetch2.default)('/db/articles').then(function (res) {
+	          console.log('aaaaaa', res.json());
+	        });
+	      } catch (err) {
+	        console.log(err);
+	      }
+	      switch (filter) {
+	        case 'SHOW_ALL':
+	          return fakeDatabase.todos;
+	        case 'SHOW_ACTIVE':
+	          return fakeDatabase.todos.filter(function (t) {
+	            return !t.completed;
+	          });
+	        case 'SHOW_COMPLETED':
+	          return fakeDatabase.todos.filter(function (t) {
+	            return t.completed;
+	          });
+	        default:
+	          return new Error('Unknown filter:' + filter + '.');
+	      }
+	    })
+	  );
+	};
+	var addTodo = exports.addTodo = function addTodo(text) {
+	  return delay(500).then(function () {
+	    var todo = {
+	      id: (0, _nodeUuid.v4)(),
+	      text: text,
+	      completed: false
+	    };
+	    fakeDatabase.todos.push(todo);
+	    return todo;
+	  });
+	};
+	var toggleTodo = exports.toggleTodo = function toggleTodo(id) {
+	  return delay(500).then(function () {
+	    var todo = fakeDatabase.todos.find(function (t) {
+	      return t.id === id;
+	    });
+	    todo.completed = !todo.completed;
+	    return todo;
+	  });
+	};
+
+/***/ },
+/* 29 */
+/***/ function(module, exports) {
+
+	module.exports = require("node-uuid");
+
+/***/ },
+/* 30 */
+/***/ function(module, exports) {
+
+	module.exports = require("isomorphic-fetch");
+
+/***/ },
+/* 31 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.getErrorMessage = exports.getIsFetching = exports.getVisibleTodos = undefined;
+
+	var _redux = __webpack_require__(23);
+
+	var _todosReducer = __webpack_require__(32);
+
+	var fromTodos = _interopRequireWildcard(_todosReducer);
+
+	var _visibilityFilterReducer = __webpack_require__(34);
+
+	var _visibilityFilterReducer2 = _interopRequireDefault(_visibilityFilterReducer);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	//我们也可以自己实现它
+	var myCombineReducers = function myCombineReducers(reducers) {
+	  //这应该是一个返回总reducer函数的函数
+	  return function () {
+	    var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+	    var action = arguments[1];
+
+	    //遍历reducers里所有的key，这个key应该是所有子state在总state里的属性名
+	    //这些key的值就是该生成这个子state的reducer函数
+	    //我们需要将这些key的值替换为这些子reduce执行的结果
+	    return Object.keys(reducers).reduce(function (nextState, key) {
+	      //所以如果来了一个action，会在每个子reducer里找一遍
+	      nextState[key] = reducers[key](state[key], action);
+	      return nextState;
+	    }, {});
+	  };
+	}; //我们的state应该是一个对象，我们App中不同部分的state应该是state的不同的属性
+	//不同的reducer负责生成这些子state
+	//还有一个总的reducer，来调用这些子reducer，生成整个应用的state
+	//redux提供一个方法合并不相关的reducer生成总reducer
+
+	var todoAppReducer = myCombineReducers({
+	  todos: fromTodos.default,
+	  visibilityFilter: _visibilityFilterReducer2.default
+	});
+	exports.default = todoAppReducer;
+	var getVisibleTodos = exports.getVisibleTodos = function getVisibleTodos(state) {
+	  return fromTodos.getVisibleTodos(state.todos, state.visibilityFilter);
+	};
+	var getIsFetching = exports.getIsFetching = function getIsFetching(state) {
+	  return fromTodos.getIsFetching(state.todos, state.visibilityFilter);
+	};
+	var getErrorMessage = exports.getErrorMessage = function getErrorMessage(state) {
+	  return fromTodos.getErrorMessage(state.todos, state.visibilityFilter);
+	};
+
+/***/ },
+/* 32 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.getErrorMessage = exports.getIsFetching = exports.getVisibleTodos = undefined;
+
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; //todosReducer
+
+
+	var _redux = __webpack_require__(23);
+
+	var _todoReducer = __webpack_require__(33);
+
+	var _todoReducer2 = _interopRequireDefault(_todoReducer);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+	//这里的reducer曾经使用一个数组来保存所有的todo，这现在来看没问题
+	//但是当数据多起来的时候，很有可能会有多个数组存着同一个todo
+	//这时我们需要使用一个类似数据库的结构来保存所有的todo，而这些数组只存这些todo的id
+	//这样利于同步和管理
+	//byId中存着所有的todo
+	var byId = function byId() {
+	  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+	  var action = arguments[1];
+
+	  var _ret = function () {
+	    switch (action.type) {
+	      case 'RECEIVE_TODOS':
+	        var nextState = _extends({}, state);
+	        action.response.forEach(function (todo) {
+	          nextState[todo.id] = todo;
+	        });
+	        return {
+	          v: nextState
+	        };
+	      case 'ADD_TODO_SUCCESS':
+	        return {
+	          v: _extends({}, state, _defineProperty({}, action.response.id, action.response))
+	        };
+	      default:
+	        return {
+	          v: state
+	        };
+	    }
+	  }();
+
+	  if ((typeof _ret === 'undefined' ? 'undefined' : _typeof(_ret)) === "object") return _ret.v;
+	};
+	var crestIdListWithFilter = function crestIdListWithFilter(filter) {
+	  var ids = function ids() {
+	    var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+	    var action = arguments[1];
+
+	    switch (action.type) {
+	      case 'RECEIVE_TODOS':
+	        return action.filter === filter ? action.response.map(function (todo) {
+	          return todo.id;
+	        }) : state;
+	      case 'ADD_TODO_SUCCESS':
+	        return filter !== 'SHOW_COMPLETED' ? [].concat(_toConsumableArray(state), [action.response.id]) : state;
+	      case 'TOGGLE_TODO_SUCCESS':
+	        var completed = action.response.completed;
+	        if (completed && filter === 'SHOW_ACTIVE' || !completed && filter === 'SHOW_COMPLETED') {
+	          return state.filter(function (id) {
+	            return id != action.response.id;
+	          });
+	        }
+	        return state;
+	      default:
+	        return state;
+	    }
+	  };
+	  var isFetching = function isFetching() {
+	    var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+	    var action = arguments[1];
+
+	    if (action.filter !== filter) return state;
+	    switch (action.type) {
+	      case 'REQUEST_TODOS':
+	        return true;
+	      case 'FAIL_REQUEST_TODOS':
+	      case 'RECEIVE_TODOS':
+	        return false;
+	      default:
+	        return state;
+	    }
+	  };
+	  var errorMessage = function errorMessage() {
+	    var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+	    var action = arguments[1];
+
+	    if (action.filter !== filter) return state;
+	    switch (action.type) {
+	      case 'REQUEST_TODOS':
+	      case 'RECEIVE_TODOS':
+	        return null;
+	      case 'FAIL_REQUEST_TODOS':
+	        return action.message;
+	      default:
+	        return state;
+	    }
+	  };
+	  return (0, _redux.combineReducers)({
+	    ids: ids,
+	    errorMessage: errorMessage,
+	    isFetching: isFetching
+	  });
+	};
+
+	var listByFilter = (0, _redux.combineReducers)({
+	  //这里存着所有的todo的id
+	  SHOW_ALL: crestIdListWithFilter('SHOW_ALL'),
+	  //这里存着所有未完成的todo的id
+	  SHOW_ACTIVE: crestIdListWithFilter('SHOW_ACTIVE'),
+	  //这里存着所有已完成的todo的id
+	  SHOW_COMPLETED: crestIdListWithFilter('SHOW_COMPLETED')
+	});
+	var todosReducer = (0, _redux.combineReducers)({
+	  byId: byId,
+	  listByFilter: listByFilter
+	});
+	exports.default = todosReducer;
+
+	//这种函数通常被成为选择器，它们从state中筛选出我们要的
+	//这里的state对应的是todosReducer的state，有byid和allid属性
+
+	var getVisibleTodos = exports.getVisibleTodos = function getVisibleTodos(state, filter) {
+	  var ids = state.listByFilter[filter].ids;
+	  return ids.map(function (id) {
+	    return state.byId[id];
+	  });
+	};
+	var getIsFetching = exports.getIsFetching = function getIsFetching(state, filter) {
+	  return state.listByFilter[filter].isFetching;
+	};
+	var getErrorMessage = exports.getErrorMessage = function getErrorMessage(state, filter) {
+	  return state.listByFilter[filter].errorMessage;
+	};
+
+/***/ },
+/* 33 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	// //todoReducer
+	var todoReducer = function todoReducer() {
+	  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+	  var action = arguments[1];
+
+	  switch (action.type) {
+	    case 'ADD_TODO':
+	      return {
+	        id: action.id,
+	        text: action.text,
+	        completed: false
+	      };
+	    case 'TOGGLE_TODO':
+	      if (state.id !== action.id) {
+	        return state;
+	      } else {
+	        //对象的immutation，使用assign或...来返回新的对象
+	        return Object.assign({}, state, {
+	          completed: !state.completed
+	        });
+	        // return {
+	        //   ...state,
+	        //   completed:!state.completed,
+	        // }
+	      }
+	    default:
+	      return state;
+	  }
+	};
+	exports.default = todoReducer;
+
+/***/ },
+/* 34 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	//visibilityFilterReducer
+	var visibilityFilterReducer = function visibilityFilterReducer() {
+	  var filter = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'SHOW_ALL';
+	  var action = arguments[1];
+
+	  switch (action.type) {
+	    case 'SET_FILTER':
+	      return action.filter;
+	    default:
+	      return filter;
+	  }
+	};
+	exports.default = visibilityFilterReducer;
+
+/***/ },
+/* 35 */
+/***/ function(module, exports) {
+
+	module.exports = require("normalizr");
+
+/***/ },
+/* 36 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.arrayOfTodos = exports.todo = undefined;
+
+	var _normalizr = __webpack_require__(35);
+
+	var todo = exports.todo = new _normalizr.Schema('todos');
+	var arrayOfTodos = exports.arrayOfTodos = (0, _normalizr.arrayOf)(todo);
+
+/***/ },
+/* 37 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
@@ -1214,11 +1745,23 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _todoAppReducer = __webpack_require__(28);
+	var _todoAppReducer = __webpack_require__(31);
 
-	var _reactRedux = __webpack_require__(32);
+	var _actions = __webpack_require__(27);
+
+	var _FetchError = __webpack_require__(38);
+
+	var _FetchError2 = _interopRequireDefault(_FetchError);
+
+	var _reactRedux = __webpack_require__(39);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 	//Todo项子组件
 	var Todo = function Todo(_ref) {
@@ -1289,7 +1832,10 @@
 	//mapStateToProps的第一个参数总是state对象，还可以使用第二个参数，代表容器组件的props对象。
 	var mapStateToProps = function mapStateToProps(state, ownProps) {
 	  return {
-	    todos: (0, _todoAppReducer.getVisibleTodos)(state)
+	    todos: (0, _todoAppReducer.getVisibleTodos)(state),
+	    isFetching: (0, _todoAppReducer.getIsFetching)(state),
+	    errorMessage: (0, _todoAppReducer.getErrorMessage)(state),
+	    filter: state.visibilityFilter
 	  };
 	};
 	//mapDispatchToProps是connect函数的第二个参数，用来建立 UI 组件的参数到store.dispatch方法的映射
@@ -1300,10 +1846,10 @@
 	var mapDispatchToProps = function mapDispatchToProps(dispatch, ownProps) {
 	  return {
 	    onTodoClick: function onTodoClick(id) {
-	      dispatch({
-	        type: 'TOGGLE_TODO',
-	        id: id
-	      });
+	      dispatch((0, _actions.toggleTodo)(id));
+	    },
+	    fetchTodos: function fetchTodos(filter, todos) {
+	      dispatch((0, _actions.fetchTodos)(filter, todos));
 	    }
 	  };
 	};
@@ -1312,233 +1858,81 @@
 	//返回的 Action 会由 Redux 自动发出
 	mapDispatchToProps = {
 	  onTodoClick: function onTodoClick(id) {
-	    return {
-	      type: 'TOGGLE_TODO',
-	      id: id
-	    };
-	  }
+	    return (0, _actions.toggleTodo)(id);
+	  },
+	  //这是一个异步的action哦
+	  fetchTodos: _actions.fetchTodos
 	};
+	// 原来直接在TodoList上使用connect生成包装组件
+	// VisibleTodoList = connect(
+	//   mapStateToProps,
+	//   mapDispatchToProps
+	// )(TodoList);
+	//但是我们想使用VisibleTodoList的生命周期函数，connect函数直接生成的元素没法修改，于是再添一层包装
+
+	var VisibleTodoList = function (_Component) {
+	  _inherits(VisibleTodoList, _Component);
+
+	  function VisibleTodoList() {
+	    _classCallCheck(this, VisibleTodoList);
+
+	    return _possibleConstructorReturn(this, (VisibleTodoList.__proto__ || Object.getPrototypeOf(VisibleTodoList)).apply(this, arguments));
+	  }
+
+	  _createClass(VisibleTodoList, [{
+	    key: 'componentDidMount',
+	    value: function componentDidMount() {
+	      this.fetchData();
+	    }
+	  }, {
+	    key: 'componentDidUpdate',
+	    value: function componentDidUpdate(prevProps) {
+	      if (this.props.filter !== prevProps.filter) this.fetchData();
+	    }
+	  }, {
+	    key: 'fetchData',
+	    value: function fetchData() {
+	      var _props = this.props,
+	          filter = _props.filter,
+	          fetchTodos = _props.fetchTodos;
+
+	      fetchTodos(filter);
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var _this2 = this;
+
+	      var _props2 = this.props,
+	          isFetching = _props2.isFetching,
+	          todos = _props2.todos,
+	          errorMessage = _props2.errorMessage;
+
+	      if (isFetching && !todos.length) {
+	        return _react2.default.createElement(
+	          'p',
+	          null,
+	          'Loading...'
+	        );
+	      }
+	      if (errorMessage) return _react2.default.createElement(_FetchError2.default, { message: errorMessage, onRetry: function onRetry() {
+	          return _this2.fetchData();
+	        } });
+	      return _react2.default.createElement(TodoList, this.props);
+	    }
+	  }]);
+
+	  return VisibleTodoList;
+	}(_react.Component);
 
 	//将上面两个函数发送给connect方法，connect方法会生成TodoList的包装组件
 	//就像上面被注释掉的部分
-	var VisibleTodoList = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(TodoList);
+	VisibleTodoList = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(VisibleTodoList);
 	/*********************************Todolist容器完*************************************/
 	exports.default = VisibleTodoList;
 
 /***/ },
-/* 28 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.getVisibleTodos = undefined;
-
-	var _redux = __webpack_require__(23);
-
-	var _todosReducer = __webpack_require__(29);
-
-	var fromTodos = _interopRequireWildcard(_todosReducer);
-
-	var _visibilityFilterReducer = __webpack_require__(31);
-
-	var _visibilityFilterReducer2 = _interopRequireDefault(_visibilityFilterReducer);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-	//我们也可以自己实现它
-	var myCombineReducers = function myCombineReducers(reducers) {
-	  //这应该是一个返回总reducer函数的函数
-	  return function () {
-	    var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-	    var action = arguments[1];
-
-	    //遍历reducers里所有的key，这个key应该是所有子state在总state里的属性名
-	    //这些key的值就是该生成这个子state的reducer函数
-	    //我们需要将这些key的值替换为这些子reduce执行的结果
-	    return Object.keys(reducers).reduce(function (nextState, key) {
-	      //所以如果来了一个action，会在每个子reducer里找一遍
-	      nextState[key] = reducers[key](state[key], action);
-	      return nextState;
-	    }, {});
-	  };
-	}; //我们的state应该是一个对象，我们App中不同部分的state应该是state的不同的属性
-	//不同的reducer负责生成这些子state
-	//还有一个总的reducer，来调用这些子reducer，生成整个应用的state
-	//redux提供一个方法合并不相关的reducer生成总reducer
-
-	var todoAppReducer = myCombineReducers({
-	  todos: fromTodos.default,
-	  visibilityFilter: _visibilityFilterReducer2.default
-	});
-	exports.default = todoAppReducer;
-	var getVisibleTodos = exports.getVisibleTodos = function getVisibleTodos(state) {
-	  return fromTodos.getVisibleTodos(state.todos, state.visibilityFilter);
-	};
-
-/***/ },
-/* 29 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.getVisibleTodos = undefined;
-
-	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; //todosReducer
-
-
-	var _redux = __webpack_require__(23);
-
-	var _todoReducer = __webpack_require__(30);
-
-	var _todoReducer2 = _interopRequireDefault(_todoReducer);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
-
-	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-	//这里的reducer曾经使用一个数组来保存所有的todo，这现在来看没问题
-	//但是当数据多起来的时候，很有可能会有多个数组存着同一个todo
-	//这时我们需要使用一个类似数据库的结构来保存所有的todo，而这些数组只存这些todo的id
-	//这样利于同步和管理
-	//byId中存着所有的todo
-	var byId = function byId() {
-	  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-	  var action = arguments[1];
-
-	  switch (action.type) {
-	    case 'ADD_TODO':
-	    case 'TOGGLE_TODO':
-	      return _extends({}, state, _defineProperty({}, action.id, (0, _todoReducer2.default)(state[action.id], action)));
-	    default:
-	      return state;
-	  }
-	};
-	//这里存着所有的todo的id，当添加时id同时添加到这个数组中
-	var allIds = function allIds() {
-	  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
-	  var action = arguments[1];
-
-	  switch (action.type) {
-	    case 'ADD_TODO':
-	      return [].concat(_toConsumableArray(state), [action.id]);
-	    default:
-	      return state;
-	  }
-	};
-	var todosReducer = (0, _redux.combineReducers)({
-	  byId: byId,
-	  allIds: allIds
-	});
-	exports.default = todosReducer;
-
-
-	var getAllTodos = function getAllTodos(state) {
-	  return state.allIds.map(function (id) {
-	    return state.byId[id];
-	  });
-	};
-
-	//这种函数通常被成为选择器，它们从state中筛选出我们要的
-	//这里的state对应的是todosReducer的state，有byid和allid属性
-	var getVisibleTodos = exports.getVisibleTodos = function getVisibleTodos(state, filter) {
-	  var allTodos = getAllTodos(state);
-	  switch (filter) {
-	    case 'SHOW_ALL':
-	      return allTodos;
-	    case 'SHOW_ACTIVE':
-	      return allTodos.filter(function (t) {
-	        return !t.completed;
-	      });
-	    case 'SHOW_COMPLETED':
-	      return allTodos.filter(function (t) {
-	        return t.completed;
-	      });
-	    default:
-	      return new Error('Unknown filter:' + filter + '.');
-	  }
-	};
-
-/***/ },
-/* 30 */
-/***/ function(module, exports) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	//todoReducer
-	var todoReducer = function todoReducer() {
-	  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-	  var action = arguments[1];
-
-	  switch (action.type) {
-	    case 'ADD_TODO':
-	      return {
-	        id: action.id,
-	        text: action.text,
-	        completed: false
-	      };
-	    case 'TOGGLE_TODO':
-	      if (state.id !== action.id) {
-	        return state;
-	      } else {
-	        //对象的immutation，使用assign或...来返回新的对象
-	        return Object.assign({}, state, {
-	          completed: !state.completed
-	        });
-	        // return {
-	        //   ...state,
-	        //   completed:!state.completed,
-	        // }
-	      }
-	    default:
-	      return state;
-	  }
-	};
-	exports.default = todoReducer;
-
-/***/ },
-/* 31 */
-/***/ function(module, exports) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	//visibilityFilterReducer
-	var visibilityFilterReducer = function visibilityFilterReducer() {
-	  var filter = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'SHOW_ALL';
-	  var action = arguments[1];
-
-	  switch (action.type) {
-	    case 'SET_FILTER':
-	      return action.filter;
-	    default:
-	      return filter;
-	  }
-	};
-	exports.default = visibilityFilterReducer;
-
-/***/ },
-/* 32 */
-/***/ function(module, exports) {
-
-	module.exports = require("react-redux");
-
-/***/ },
-/* 33 */
+/* 38 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1551,19 +1945,53 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _nodeUuid = __webpack_require__(34);
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var FetchError = function FetchError(_ref) {
+	  var message = _ref.message,
+	      onRetry = _ref.onRetry;
+	  return _react2.default.createElement(
+	    'div',
+	    null,
+	    _react2.default.createElement(
+	      'p',
+	      null,
+	      'Could not fetch todos. ',
+	      message
+	    ),
+	    _react2.default.createElement(
+	      'button',
+	      { onClick: onRetry },
+	      'Retry'
+	    )
+	  );
+	};
+	exports.default = FetchError;
+
+/***/ },
+/* 39 */
+/***/ function(module, exports) {
+
+	module.exports = require("react-redux");
+
+/***/ },
+/* 40 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _react = __webpack_require__(3);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _actions = __webpack_require__(27);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	//使用Action Creater，一个应用的action是固定的，使用creater来产生各个实际的action会标准且方便
-	var addTodo = function addTodo(text) {
-	  return {
-	    type: 'ADD_TODO',
-	    text: text,
-	    //使用这个方法产生唯一ID
-	    id: (0, _nodeUuid.v4)()
-	  };
-	};
 	//add todo子组件，这里的第二个参数就是环境变量
 	var AddTodo = function AddTodo(props, _ref) {
 	  var store = _ref.store;
@@ -1579,7 +2007,7 @@
 	      'button',
 	      { onClick: function onClick() {
 	          if (input.value !== '') {
-	            store.dispatch(addTodo(input.value));
+	            store.dispatch((0, _actions.addTodo)(input.value));
 	          }
 	          input.value = '';
 	        } },
@@ -1594,13 +2022,7 @@
 	exports.default = AddTodo;
 
 /***/ },
-/* 34 */
-/***/ function(module, exports) {
-
-	module.exports = require("node-uuid");
-
-/***/ },
-/* 35 */
+/* 41 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1609,36 +2031,76 @@
 	  value: true
 	});
 
-	var _todoAppReducer = __webpack_require__(28);
+	var _todoAppReducer = __webpack_require__(31);
 
 	var _todoAppReducer2 = _interopRequireDefault(_todoAppReducer);
 
 	var _redux = __webpack_require__(23);
 
-	var _localStorage = __webpack_require__(36);
+	var _localStorage = __webpack_require__(42);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var addLoggingToDispatch = function addLoggingToDispatch(store) {
-	  var rawDispatch = store.dispatch;
-	  return function (action) {
-	    console.group(action.type);
-	    console.log('%c prev state', 'color:gray', store.getState());
-	    console.log('%c action', 'color:blue', action);
-	    var returnValue = rawDispatch(action);
-	    console.log('%c next state', 'color:green', store.getState());
-	    console.groupEnd(action.type);
-	    return returnValue;
+	var logging = function logging(store) {
+	  return function (next) {
+	    return function (action) {
+	      console.group(action.type);
+	      console.log('%c prev state', 'color:gray', store.getState());
+	      console.log('%c action', 'color:blue', action);
+	      var returnValue = next(action);
+	      console.log('%c next state', 'color:green', store.getState());
+	      console.groupEnd(action.type);
+	      return returnValue;
+	    };
 	  };
 	};
+	// 使dispatch可以处理promise类型的action
+	// 这类action在完成后可以在then方法中取到带着异步取来的数据的普通action
+	// 将这个普通的action传给原生的dispatch
+	var promise = function promise(store) {
+	  return function (next) {
+	    return function (action) {
+	      if (typeof action.then === 'function') return action.then(next);
+	      return next(action);
+	    };
+	  };
+	};
+	//这个函数其实就是applyMiddleware的简化版
+	var warpDispatchWithMiddlewares = function warpDispatchWithMiddlewares(store, middlewares) {
+	  //由于我们中间件数组中中间件的顺序是是Action流过中间件的顺序
+	  //那么处理这些中间件的顺序就是反过来的
+	  //在logging后再把这个修改过的dispatch传给promise，使其可以处理Promise类型的Action
+	  //这样的顺序可以保证在promise中的promise完成后再调用logging中的代码
+	  //如果反过来，在Promise完成前就会输出log，而这时打出来的action是一个Promise对象，我们并不想要
+	  middlewares.slice().reverse().forEach(function (middleware) {
+	    return store.dispatch = middleware(store)(store.dispatch);
+	  });
+	};
+	//这个中间件检测发来的action是不是一个函数，如果是的话就说明我们想进行一组action的dispatch
+	var thunk = function thunk(store) {
+	  return function (next) {
+	    return function (action) {
+	      return typeof action === 'function' ? action(store.dispatch, store.getState) : next(action);
+	    };
+	  };
+	};
+
 	var configureStore = function configureStore() {
 	  var persistedInitialState = (0, _localStorage.loadState)();
+	  //我们将两个对dispatch做处理的中间件放在一个中间件数组里
+	  //中间件放置的顺序将是action流过这些中间件的顺序
+	  //这样的情况下处理中间件数组的函数warpDispatchWithMiddlewares就要多做一些处理
+	  var middlewares = [thunk];
+	  if (process.env.NODE_ENV !== 'production') {
+	    middlewares.push(logging);
+	  }
 	  //creatStore可以接受第2个参数，这是一个对象，用来指定state的初始状态，可以部分指定，也可以全部指定
 	  //未指定的state属性将继续使用reducer中传入的默认值
+	  //还可以接受第三个参数，这个参数就是应用中间件的函数
+	  //const store=createStore(todoAppReducer,persistedInitialState,applyMiddleware(...middlewares));
+	  //还是先用自己的吧～
 	  var store = (0, _redux.createStore)(_todoAppReducer2.default, persistedInitialState);
-	  if (process.env.NODE_ENV !== 'production') {
-	    store.dispatch = addLoggingToDispatch(store);
-	  }
+	  warpDispatchWithMiddlewares(store, middlewares);
 	  //每当store有变化，就持久化到localStorage里
 	  store.subscribe(function () {
 	    (0, _localStorage.saveState)({
@@ -1650,7 +2112,7 @@
 	exports.default = configureStore;
 
 /***/ },
-/* 36 */
+/* 42 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -1660,7 +2122,7 @@
 	});
 	var loadState = exports.loadState = function loadState() {
 	  try {
-	    //localStorage.removeItem('state');
+	    localStorage.removeItem('state');
 	    var serializedState = localStorage.getItem('state');
 	    if (serializedState === null) return undefined;
 	    return JSON.parse(serializedState);
@@ -1676,6 +2138,29 @@
 	    localStorage.setItem('state', serializedState);
 	  } catch (err) {}
 	};
+
+/***/ },
+/* 43 */
+/***/ function(module, exports) {
+
+	module.exports = require("mongoose");
+
+/***/ },
+/* 44 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	var mongoose = __webpack_require__(43);
+	var Schema = mongoose.Schema;
+	//定义一个Schema
+	var TodoSchema = new Schema({
+	  id: { type: String },
+	  text: { type: String },
+	  completed: { type: Boolean }
+	});
+	//定义一个model
+	var TodoModel = mongoose.model("Todo", TodoSchema);
 
 /***/ }
 /******/ ]);
