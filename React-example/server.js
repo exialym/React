@@ -14,7 +14,7 @@ var app = express()
 global.dbHandle=require('./modules/ReduxTodo/api/db');
 //连接数据库，默认端口号是27017，todolist是自己的数据库名称
 global.db=mongoose.connect('mongodb://localhost:27017/todolist');
-var todo=mongoose.model('Todo');
+var todo=mongoose.model('todo');
 
 // serve our static stuff like index.css
 app.use(express.static(path.join(__dirname, 'public'), {index: false}))
@@ -52,22 +52,27 @@ app.get('/www/*', function (req, res) {
     })
 });
 app.get('/db/articles',function(req,res){
-    //可以使用model创建一个实体
-    var todoItem=new todo({
-        id:'123',
-        text:'hello',
-        completed:false
-    });
-//然后保存到数据库
-    todoItem.save();
     todo.find({},function(err,results){
         if(err){
             console.log('error message',err);
             return;
         }
-        console.log(results);
+        //console.log(results);
         res.json(results);
     })
+});
+app.get('/db/articles/add/:text',function(req,res){
+    console.log('db request');
+    var text = req.params.text
+    //可以使用model创建一个实体
+    var todoItem=new todo({
+        text:text,
+        completed:false
+    });
+    //然后保存到数据库
+    todoItem.save().then((result) => {
+        res.json(result);
+    });
 });
 function renderPage(appHtml) {
     return `

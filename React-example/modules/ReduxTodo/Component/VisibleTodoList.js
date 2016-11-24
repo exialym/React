@@ -14,9 +14,9 @@ const TodoList = ({todos, onTodoClick}) => (
   <ol>
     {todos.map(todo =>
       <Todo
-        key={todo.id}
+        key={todo._id}
         {...todo}
-        onClick={() => onTodoClick(todo.id)}
+        onClick={() => onTodoClick(todo._id)}
       />
     )}
   </ol>

@@ -39,7 +39,8 @@
           color: #00539f; }
     #main .content .middle {
       flex: 1;
-      padding: 1em; }
+      padding: 1em;
+      overflow: auto; }
       #main .content .middle button, #main .content .middle input {
         border: 1px solid rgba(147, 128, 108, 0.25);
         padding: .5em .75em;

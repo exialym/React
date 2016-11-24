@@ -50,6 +50,7 @@
     .middle{
       flex:1;
       padding: 1em;
+      overflow: auto;
       button,input{
         border: 1px solid hsla(31,15%,50%,.25);
         padding: .5em .75em;

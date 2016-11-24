@@ -11,7 +11,7 @@ const byId = (state = {},action) => {
     case 'RECEIVE_TODOS':
       const nextState = {...state};
       action.response.forEach(todo => {
-        nextState[todo.id] = todo;
+        nextState[todo._id] = todo;
       });
       return nextState;
     case 'ADD_TODO_SUCCESS':
@@ -28,7 +28,7 @@ const crestIdListWithFilter = (filter) => {
     switch (action.type) {
       case 'RECEIVE_TODOS':
         return action.filter === filter ?
-          action.response.map(todo => todo.id) :
+          action.response.map(todo => todo._id) :
           state;
       case 'ADD_TODO_SUCCESS':
         return filter !== 'SHOW_COMPLETED' ?

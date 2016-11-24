@@ -29744,49 +29744,38 @@
 	};
 
 	var fetchTodos = exports.fetchTodos = function fetchTodos(filter) {
-	  return (
-	    // new Promise.then(() => {
-	    //
-	    // });
-	    delay(500).then(function () {
-	      if (Math.random() > 0.8) {
-	        throw new Error('connect failed');
-	      }
-	      try {
-	        //express后台中需要建立'/articles'路由，来处理请求数据
-	        (0, _isomorphicFetch2.default)('/db/articles').then(function (res) {
-	          console.log('aaaaaa', res.json());
-	        });
-	      } catch (err) {
-	        console.log(err);
-	      }
+	  try {
+	    //express后台中需要建立'/articles'路由，来处理请求数据
+	    return (0, _isomorphicFetch2.default)('/db/articles').then(function (res) {
+	      var result = res.json();
 	      switch (filter) {
 	        case 'SHOW_ALL':
-	          return fakeDatabase.todos;
+	          return result;
 	        case 'SHOW_ACTIVE':
-	          return fakeDatabase.todos.filter(function (t) {
+	          return result.filter(function (t) {
 	            return !t.completed;
 	          });
 	        case 'SHOW_COMPLETED':
-	          return fakeDatabase.todos.filter(function (t) {
+	          return result.filter(function (t) {
 	            return t.completed;
 	          });
 	        default:
 	          return new Error('Unknown filter:' + filter + '.');
 	      }
-	    })
-	  );
+	    });
+	  } catch (err) {
+	    console.log(err);
+	  }
 	};
 	var addTodo = exports.addTodo = function addTodo(text) {
-	  return delay(500).then(function () {
-	    var todo = {
-	      id: (0, _nodeUuid.v4)(),
-	      text: text,
-	      completed: false
-	    };
-	    fakeDatabase.todos.push(todo);
-	    return todo;
-	  });
+	  try {
+	    //express后台中需要建立'/articles'路由，来处理请求数据
+	    return (0, _isomorphicFetch2.default)('/db/articles/add/' + text).then(function (res) {
+	      return res.json();
+	    });
+	  } catch (err) {
+	    console.log(err);
+	  }
 	};
 	var toggleTodo = exports.toggleTodo = function toggleTodo(id) {
 	  return delay(500).then(function () {
@@ -34663,7 +34652,7 @@
 	      case 'RECEIVE_TODOS':
 	        var nextState = _extends({}, state);
 	        action.response.forEach(function (todo) {
-	          nextState[todo.id] = todo;
+	          nextState[todo._id] = todo;
 	        });
 	        return {
 	          v: nextState
@@ -34689,7 +34678,7 @@
 	    switch (action.type) {
 	      case 'RECEIVE_TODOS':
 	        return action.filter === filter ? action.response.map(function (todo) {
-	          return todo.id;
+	          return todo._id;
 	        }) : state;
 	      case 'ADD_TODO_SUCCESS':
 	        return filter !== 'SHOW_COMPLETED' ? [].concat(_toConsumableArray(state), [action.response.id]) : state;
@@ -37842,10 +37831,10 @@
 	    null,
 	    todos.map(function (todo) {
 	      return _react2.default.createElement(Todo, _extends({
-	        key: todo.id
+	        key: todo._id
 	      }, todo, {
 	        onClick: function onClick() {
-	          return onTodoClick(todo.id);
+	          return onTodoClick(todo._id);
 	        }
 	      }));
 	    })

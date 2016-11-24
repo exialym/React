@@ -83,7 +83,7 @@
 	global.dbHandle = __webpack_require__(44);
 	//连接数据库，默认端口号是27017，todolist是自己的数据库名称
 	global.db = _mongoose2.default.connect('mongodb://localhost:27017/todolist');
-	var todo = _mongoose2.default.model('Todo');
+	var todo = _mongoose2.default.model('todo');
 
 	// serve our static stuff like index.css
 	app.use(_express2.default.static(_path2.default.join(__dirname, 'public'), { index: false }));
@@ -121,21 +121,26 @@
 	    });
 	});
 	app.get('/db/articles', function (req, res) {
-	    //可以使用model创建一个实体
-	    var todoItem = new todo({
-	        id: '123',
-	        text: 'hello',
-	        completed: false
-	    });
-	    //然后保存到数据库
-	    todoItem.save();
 	    todo.find({}, function (err, results) {
 	        if (err) {
 	            console.log('error message', err);
 	            return;
 	        }
-	        console.log(results);
+	        //console.log(results);
 	        res.json(results);
+	    });
+	});
+	app.get('/db/articles/add/:text', function (req, res) {
+	    console.log('db request');
+	    var text = req.params.text;
+	    //可以使用model创建一个实体
+	    var todoItem = new todo({
+	        text: text,
+	        completed: false
+	    });
+	    //然后保存到数据库
+	    todoItem.save().then(function (result) {
+	        res.json(result);
 	    });
 	});
 	function renderPage(appHtml) {
@@ -1364,49 +1369,38 @@
 	};
 
 	var fetchTodos = exports.fetchTodos = function fetchTodos(filter) {
-	  return (
-	    // new Promise.then(() => {
-	    //
-	    // });
-	    delay(500).then(function () {
-	      if (Math.random() > 0.8) {
-	        throw new Error('connect failed');
-	      }
-	      try {
-	        //express后台中需要建立'/articles'路由，来处理请求数据
-	        (0, _isomorphicFetch2.default)('/db/articles').then(function (res) {
-	          console.log('aaaaaa', res.json());
-	        });
-	      } catch (err) {
-	        console.log(err);
-	      }
+	  try {
+	    //express后台中需要建立'/articles'路由，来处理请求数据
+	    return (0, _isomorphicFetch2.default)('/db/articles').then(function (res) {
+	      var result = res.json();
 	      switch (filter) {
 	        case 'SHOW_ALL':
-	          return fakeDatabase.todos;
+	          return result;
 	        case 'SHOW_ACTIVE':
-	          return fakeDatabase.todos.filter(function (t) {
+	          return result.filter(function (t) {
 	            return !t.completed;
 	          });
 	        case 'SHOW_COMPLETED':
-	          return fakeDatabase.todos.filter(function (t) {
+	          return result.filter(function (t) {
 	            return t.completed;
 	          });
 	        default:
 	          return new Error('Unknown filter:' + filter + '.');
 	      }
-	    })
-	  );
+	    });
+	  } catch (err) {
+	    console.log(err);
+	  }
 	};
 	var addTodo = exports.addTodo = function addTodo(text) {
-	  return delay(500).then(function () {
-	    var todo = {
-	      id: (0, _nodeUuid.v4)(),
-	      text: text,
-	      completed: false
-	    };
-	    fakeDatabase.todos.push(todo);
-	    return todo;
-	  });
+	  try {
+	    //express后台中需要建立'/articles'路由，来处理请求数据
+	    return (0, _isomorphicFetch2.default)('/db/articles/add/' + text).then(function (res) {
+	      return res.json();
+	    });
+	  } catch (err) {
+	    console.log(err);
+	  }
 	};
 	var toggleTodo = exports.toggleTodo = function toggleTodo(id) {
 	  return delay(500).then(function () {
@@ -1533,7 +1527,7 @@
 	      case 'RECEIVE_TODOS':
 	        var nextState = _extends({}, state);
 	        action.response.forEach(function (todo) {
-	          nextState[todo.id] = todo;
+	          nextState[todo._id] = todo;
 	        });
 	        return {
 	          v: nextState
@@ -1559,7 +1553,7 @@
 	    switch (action.type) {
 	      case 'RECEIVE_TODOS':
 	        return action.filter === filter ? action.response.map(function (todo) {
-	          return todo.id;
+	          return todo._id;
 	        }) : state;
 	      case 'ADD_TODO_SUCCESS':
 	        return filter !== 'SHOW_COMPLETED' ? [].concat(_toConsumableArray(state), [action.response.id]) : state;
@@ -1784,10 +1778,10 @@
 	    null,
 	    todos.map(function (todo) {
 	      return _react2.default.createElement(Todo, _extends({
-	        key: todo.id
+	        key: todo._id
 	      }, todo, {
 	        onClick: function onClick() {
-	          return onTodoClick(todo.id);
+	          return onTodoClick(todo._id);
 	        }
 	      }));
 	    })
@@ -2155,12 +2149,11 @@
 	var Schema = mongoose.Schema;
 	//定义一个Schema
 	var TodoSchema = new Schema({
-	  id: { type: String },
 	  text: { type: String },
 	  completed: { type: Boolean }
 	});
-	//定义一个model
-	var TodoModel = mongoose.model("Todo", TodoSchema);
+	//定义一个model，这里model的名字变为小写并加上s就是在数据库里collection的名字
+	var TodoModel = mongoose.model("todo", TodoSchema);
 
 /***/ }
 /******/ ]);
