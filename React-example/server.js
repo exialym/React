@@ -62,7 +62,6 @@ app.get('/db/articles',function(req,res){
     })
 });
 app.get('/db/articles/add/:text',function(req,res){
-    console.log('db request');
     var text = req.params.text
     //可以使用model创建一个实体
     var todoItem=new todo({
@@ -73,6 +72,24 @@ app.get('/db/articles/add/:text',function(req,res){
     todoItem.save().then((result) => {
         res.json(result);
     });
+});
+app.get('/db/articles/toggle/:id',function(req,res){
+  var id = req.params.id;
+  todo.findById(id,function(err,results){
+    if(err){
+      console.log('error message',err);
+      return;
+    }
+    results.completed = !results.completed;
+    var todoItem=new todo(results);
+    //然后保存到数据库
+    todoItem.save().then((result) => {
+      console.log('db',result)
+      res.json(result);
+    });
+  })
+  // //可以使用model创建一个实体
+
 });
 function renderPage(appHtml) {
     return `

@@ -29748,15 +29748,17 @@
 	    //express后台中需要建立'/articles'路由，来处理请求数据
 	    return (0, _isomorphicFetch2.default)('/db/articles').then(function (res) {
 	      var result = res.json();
+	      return result;
+	    }).then(function (res) {
 	      switch (filter) {
 	        case 'SHOW_ALL':
-	          return result;
+	          return res;
 	        case 'SHOW_ACTIVE':
-	          return result.filter(function (t) {
+	          return res.filter(function (t) {
 	            return !t.completed;
 	          });
 	        case 'SHOW_COMPLETED':
-	          return result.filter(function (t) {
+	          return res.filter(function (t) {
 	            return t.completed;
 	          });
 	        default:
@@ -29769,7 +29771,6 @@
 	};
 	var addTodo = exports.addTodo = function addTodo(text) {
 	  try {
-	    //express后台中需要建立'/articles'路由，来处理请求数据
 	    return (0, _isomorphicFetch2.default)('/db/articles/add/' + text).then(function (res) {
 	      return res.json();
 	    });
@@ -29778,13 +29779,15 @@
 	  }
 	};
 	var toggleTodo = exports.toggleTodo = function toggleTodo(id) {
-	  return delay(500).then(function () {
-	    var todo = fakeDatabase.todos.find(function (t) {
-	      return t.id === id;
+	  try {
+	    return (0, _isomorphicFetch2.default)('/db/articles/toggle/' + id).then(function (res) {
+	      console.log('fetch return?');
+	      console.log('fetch return', res.json());
+	      return res.json();
 	    });
-	    todo.completed = !todo.completed;
-	    return todo;
-	  });
+	  } catch (err) {
+	    console.log(err);
+	  }
 	};
 
 /***/ },
@@ -34686,7 +34689,7 @@
 	        var completed = action.response.completed;
 	        if (completed && filter === 'SHOW_ACTIVE' || !completed && filter === 'SHOW_COMPLETED') {
 	          return state.filter(function (id) {
-	            return id != action.response.id;
+	            return id != action.response._id;
 	          });
 	        }
 	        return state;

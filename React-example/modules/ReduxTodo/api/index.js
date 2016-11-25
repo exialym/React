@@ -24,13 +24,15 @@ export const fetchTodos = (filter) => {
     //express后台中需要建立'/articles'路由，来处理请求数据
     return fetch('/db/articles').then((res) => {
       var result = res.json();
+      return result;
+    }).then((res) => {
       switch (filter) {
         case 'SHOW_ALL':
-          return result;
+          return res;
         case 'SHOW_ACTIVE':
-          return result.filter(t=>!t.completed);
+          return res.filter(t=>!t.completed);
         case 'SHOW_COMPLETED':
-          return result.filter(t=>t.completed);
+          return res.filter(t=>t.completed);
         default:
           return new Error(`Unknown filter:${filter}.`);
       }
@@ -41,7 +43,6 @@ export const fetchTodos = (filter) => {
 };
 export const addTodo = (text) => {
   try {
-    //express后台中需要建立'/articles'路由，来处理请求数据
     return fetch('/db/articles/add/' + text).then((res) => {
       return res.json();
     });
@@ -49,9 +50,14 @@ export const addTodo = (text) => {
     console.log(err);
   }
 };
-export const toggleTodo = (id) =>
-  delay(500).then(() => {
-    const todo = fakeDatabase.todos.find(t => t.id ===id);
-    todo.completed = !todo.completed;
-    return todo;
-  });
+export const toggleTodo = (id) => {
+  try {
+    return fetch('/db/articles/toggle/' + id).then((res) => {
+      console.log('fetch return?');
+      console.log('fetch return',res.json());
+      return res.json();
+    });
+  } catch (err) {
+    console.log(err);
+  }
+};

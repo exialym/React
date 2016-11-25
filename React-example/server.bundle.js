@@ -131,7 +131,6 @@
 	    });
 	});
 	app.get('/db/articles/add/:text', function (req, res) {
-	    console.log('db request');
 	    var text = req.params.text;
 	    //可以使用model创建一个实体
 	    var todoItem = new todo({
@@ -142,6 +141,23 @@
 	    todoItem.save().then(function (result) {
 	        res.json(result);
 	    });
+	});
+	app.get('/db/articles/toggle/:id', function (req, res) {
+	    var id = req.params.id;
+	    todo.findById(id, function (err, results) {
+	        if (err) {
+	            console.log('error message', err);
+	            return;
+	        }
+	        results.completed = !results.completed;
+	        var todoItem = new todo(results);
+	        //然后保存到数据库
+	        todoItem.save().then(function (result) {
+	            console.log('db', result);
+	            res.json(result);
+	        });
+	    });
+	    // //可以使用model创建一个实体
 	});
 	function renderPage(appHtml) {
 	    return '\n    <!doctype html public="storage">\n    <html>\n    <meta charset=utf-8/>\n    <title>My First React Router App</title>\n    <link rel=stylesheet href=/index.css>\n    <div id=app>' + appHtml + '</div>\n    <script src="/bundle.js"></script>\n   ';
@@ -1373,15 +1389,17 @@
 	    //express后台中需要建立'/articles'路由，来处理请求数据
 	    return (0, _isomorphicFetch2.default)('/db/articles').then(function (res) {
 	      var result = res.json();
+	      return result;
+	    }).then(function (res) {
 	      switch (filter) {
 	        case 'SHOW_ALL':
-	          return result;
+	          return res;
 	        case 'SHOW_ACTIVE':
-	          return result.filter(function (t) {
+	          return res.filter(function (t) {
 	            return !t.completed;
 	          });
 	        case 'SHOW_COMPLETED':
-	          return result.filter(function (t) {
+	          return res.filter(function (t) {
 	            return t.completed;
 	          });
 	        default:
@@ -1394,7 +1412,6 @@
 	};
 	var addTodo = exports.addTodo = function addTodo(text) {
 	  try {
-	    //express后台中需要建立'/articles'路由，来处理请求数据
 	    return (0, _isomorphicFetch2.default)('/db/articles/add/' + text).then(function (res) {
 	      return res.json();
 	    });
@@ -1403,13 +1420,15 @@
 	  }
 	};
 	var toggleTodo = exports.toggleTodo = function toggleTodo(id) {
-	  return delay(500).then(function () {
-	    var todo = fakeDatabase.todos.find(function (t) {
-	      return t.id === id;
+	  try {
+	    return (0, _isomorphicFetch2.default)('/db/articles/toggle/' + id).then(function (res) {
+	      console.log('fetch return?');
+	      console.log('fetch return', res.json());
+	      return res.json();
 	    });
-	    todo.completed = !todo.completed;
-	    return todo;
-	  });
+	  } catch (err) {
+	    console.log(err);
+	  }
 	};
 
 /***/ },
@@ -1561,7 +1580,7 @@
 	        var completed = action.response.completed;
 	        if (completed && filter === 'SHOW_ACTIVE' || !completed && filter === 'SHOW_COMPLETED') {
 	          return state.filter(function (id) {
-	            return id != action.response.id;
+	            return id != action.response._id;
 	          });
 	        }
 	        return state;

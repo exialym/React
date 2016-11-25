@@ -37,7 +37,7 @@ const crestIdListWithFilter = (filter) => {
       case 'TOGGLE_TODO_SUCCESS':
         const completed = action.response.completed;
         if ((completed&&filter==='SHOW_ACTIVE')||(!completed&&filter==='SHOW_COMPLETED')) {
-          return state.filter(id => id != action.response.id);
+          return state.filter(id => id != action.response._id);
         }
         return state;
       default:
