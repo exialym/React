@@ -15,9 +15,10 @@ const byId = (state = {},action) => {
       });
       return nextState;
     case 'ADD_TODO_SUCCESS':
+    case 'TOGGLE_TODO_SUCCESS':
       return {
         ...state,
-        [action.response.id]: action.response,
+        [action.response._id]: action.response,
       };
     default:
       return state;
@@ -32,7 +33,7 @@ const crestIdListWithFilter = (filter) => {
           state;
       case 'ADD_TODO_SUCCESS':
         return filter !== 'SHOW_COMPLETED' ?
-          [...state, action.response.id] :
+          [...state, action.response._id] :
           state;
       case 'TOGGLE_TODO_SUCCESS':
         const completed = action.response.completed;

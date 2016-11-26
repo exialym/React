@@ -57,7 +57,6 @@ app.get('/db/articles',function(req,res){
             console.log('error message',err);
             return;
         }
-        //console.log(results);
         res.json(results);
     })
 });
@@ -84,11 +83,9 @@ app.get('/db/articles/toggle/:id',function(req,res){
     var todoItem=new todo(results);
     //然后保存到数据库
     todoItem.save().then((result) => {
-      console.log('db',result)
       res.json(result);
     });
   })
-  // //可以使用model创建一个实体
 
 });
 function renderPage(appHtml) {

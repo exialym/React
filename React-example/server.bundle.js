@@ -66,7 +66,7 @@
 
 	var _routers2 = _interopRequireDefault(_routers);
 
-	var _mongoose = __webpack_require__(43);
+	var _mongoose = __webpack_require__(42);
 
 	var _mongoose2 = _interopRequireDefault(_mongoose);
 
@@ -80,7 +80,7 @@
 
 	var app = (0, _express2.default)();
 	//导入定义的模型
-	global.dbHandle = __webpack_require__(44);
+	global.dbHandle = __webpack_require__(43);
 	//连接数据库，默认端口号是27017，todolist是自己的数据库名称
 	global.db = _mongoose2.default.connect('mongodb://localhost:27017/todolist');
 	var todo = _mongoose2.default.model('todo');
@@ -126,7 +126,6 @@
 	            console.log('error message', err);
 	            return;
 	        }
-	        //console.log(results);
 	        res.json(results);
 	    });
 	});
@@ -153,11 +152,9 @@
 	        var todoItem = new todo(results);
 	        //然后保存到数据库
 	        todoItem.save().then(function (result) {
-	            console.log('db', result);
 	            res.json(result);
 	        });
 	    });
-	    // //可以使用model创建一个实体
 	});
 	function renderPage(appHtml) {
 	    return '\n    <!doctype html public="storage">\n    <html>\n    <meta charset=utf-8/>\n    <title>My First React Router App</title>\n    <link rel=stylesheet href=/index.css>\n    <div id=app>' + appHtml + '</div>\n    <script src="/bundle.js"></script>\n   ';
@@ -1041,7 +1038,7 @@
 
 	var _TodoApp2 = _interopRequireDefault(_TodoApp);
 
-	var _configureStore = __webpack_require__(41);
+	var _configureStore = __webpack_require__(40);
 
 	var _configureStore2 = _interopRequireDefault(_configureStore);
 
@@ -1097,11 +1094,11 @@
 
 	var _Footer2 = _interopRequireDefault(_Footer);
 
-	var _VisibleTodoList = __webpack_require__(37);
+	var _VisibleTodoList = __webpack_require__(36);
 
 	var _VisibleTodoList2 = _interopRequireDefault(_VisibleTodoList);
 
-	var _AddTodo = __webpack_require__(40);
+	var _AddTodo = __webpack_require__(39);
 
 	var _AddTodo2 = _interopRequireDefault(_AddTodo);
 
@@ -1263,11 +1260,11 @@
 
 	var api = _interopRequireWildcard(_api);
 
-	var _todoAppReducer = __webpack_require__(31);
+	var _todoAppReducer = __webpack_require__(30);
 
-	var _normalizr = __webpack_require__(35);
+	var _normalizr = __webpack_require__(34);
 
-	var _schema = __webpack_require__(36);
+	var _schema = __webpack_require__(35);
 
 	var schema = _interopRequireWildcard(_schema);
 
@@ -1277,7 +1274,7 @@
 	var addTodo = exports.addTodo = function addTodo(text) {
 	  return function (dispatch) {
 	    return api.addTodo(text).then(function (response) {
-	      console.log('normalized response', (0, _normalizr.normalize)(response, schema.todo));
+	      //console.log('normalized response',normalize(response,schema.todo));
 	      dispatch({
 	        type: 'ADD_TODO_SUCCESS',
 	        response: response
@@ -1335,7 +1332,7 @@
 	    }
 	    dispatch(requestTodos(filter));
 	    return api.fetchTodos(filter).then(function (response) {
-	      console.log('normalized response', (0, _normalizr.normalize)(response, schema.arrayOfTodos));
+	      //console.log('normalized response',normalize(response,schema.arrayOfTodos));
 	      dispatch(receiveTodos(filter, response));
 	    }, function (error) {
 	      dispatch(failRequestTodos(filter, error.message || 'Something bad happened'));
@@ -1354,42 +1351,17 @@
 	});
 	exports.toggleTodo = exports.addTodo = exports.fetchTodos = undefined;
 
-	var _nodeUuid = __webpack_require__(29);
-
-	var _isomorphicFetch = __webpack_require__(30);
+	var _isomorphicFetch = __webpack_require__(29);
 
 	var _isomorphicFetch2 = _interopRequireDefault(_isomorphicFetch);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	//这里模拟一个假的数据库，从这个数据库读数据时会是异步的。
-	var fakeDatabase = {
-	  todos: [{
-	    id: (0, _nodeUuid.v4)(),
-	    text: 'hey',
-	    completed: false
-	  }, {
-	    id: (0, _nodeUuid.v4)(),
-	    text: 'hello',
-	    completed: true
-	  }, {
-	    id: (0, _nodeUuid.v4)(),
-	    text: 'ha',
-	    completed: false
-	  }]
-	};
-	var delay = function delay(ms) {
-	  return new Promise(function (resolve) {
-	    return setTimeout(resolve, ms);
-	  });
-	};
-
 	var fetchTodos = exports.fetchTodos = function fetchTodos(filter) {
 	  try {
 	    //express后台中需要建立'/articles'路由，来处理请求数据
 	    return (0, _isomorphicFetch2.default)('/db/articles').then(function (res) {
-	      var result = res.json();
-	      return result;
+	      return res.json();
 	    }).then(function (res) {
 	      switch (filter) {
 	        case 'SHOW_ALL':
@@ -1413,6 +1385,7 @@
 	var addTodo = exports.addTodo = function addTodo(text) {
 	  try {
 	    return (0, _isomorphicFetch2.default)('/db/articles/add/' + text).then(function (res) {
+	      //res.json()返回的是promise对象
 	      return res.json();
 	    });
 	  } catch (err) {
@@ -1422,8 +1395,6 @@
 	var toggleTodo = exports.toggleTodo = function toggleTodo(id) {
 	  try {
 	    return (0, _isomorphicFetch2.default)('/db/articles/toggle/' + id).then(function (res) {
-	      console.log('fetch return?');
-	      console.log('fetch return', res.json());
 	      return res.json();
 	    });
 	  } catch (err) {
@@ -1435,16 +1406,10 @@
 /* 29 */
 /***/ function(module, exports) {
 
-	module.exports = require("node-uuid");
-
-/***/ },
-/* 30 */
-/***/ function(module, exports) {
-
 	module.exports = require("isomorphic-fetch");
 
 /***/ },
-/* 31 */
+/* 30 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1456,11 +1421,11 @@
 
 	var _redux = __webpack_require__(23);
 
-	var _todosReducer = __webpack_require__(32);
+	var _todosReducer = __webpack_require__(31);
 
 	var fromTodos = _interopRequireWildcard(_todosReducer);
 
-	var _visibilityFilterReducer = __webpack_require__(34);
+	var _visibilityFilterReducer = __webpack_require__(33);
 
 	var _visibilityFilterReducer2 = _interopRequireDefault(_visibilityFilterReducer);
 
@@ -1505,7 +1470,7 @@
 	};
 
 /***/ },
-/* 32 */
+/* 31 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1522,7 +1487,7 @@
 
 	var _redux = __webpack_require__(23);
 
-	var _todoReducer = __webpack_require__(33);
+	var _todoReducer = __webpack_require__(32);
 
 	var _todoReducer2 = _interopRequireDefault(_todoReducer);
 
@@ -1552,8 +1517,9 @@
 	          v: nextState
 	        };
 	      case 'ADD_TODO_SUCCESS':
+	      case 'TOGGLE_TODO_SUCCESS':
 	        return {
-	          v: _extends({}, state, _defineProperty({}, action.response.id, action.response))
+	          v: _extends({}, state, _defineProperty({}, action.response._id, action.response))
 	        };
 	      default:
 	        return {
@@ -1575,7 +1541,7 @@
 	          return todo._id;
 	        }) : state;
 	      case 'ADD_TODO_SUCCESS':
-	        return filter !== 'SHOW_COMPLETED' ? [].concat(_toConsumableArray(state), [action.response.id]) : state;
+	        return filter !== 'SHOW_COMPLETED' ? [].concat(_toConsumableArray(state), [action.response._id]) : state;
 	      case 'TOGGLE_TODO_SUCCESS':
 	        var completed = action.response.completed;
 	        if (completed && filter === 'SHOW_ACTIVE' || !completed && filter === 'SHOW_COMPLETED') {
@@ -1656,7 +1622,7 @@
 	};
 
 /***/ },
-/* 33 */
+/* 32 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -1696,7 +1662,7 @@
 	exports.default = todoReducer;
 
 /***/ },
-/* 34 */
+/* 33 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -1719,13 +1685,13 @@
 	exports.default = visibilityFilterReducer;
 
 /***/ },
-/* 35 */
+/* 34 */
 /***/ function(module, exports) {
 
 	module.exports = require("normalizr");
 
 /***/ },
-/* 36 */
+/* 35 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1735,13 +1701,13 @@
 	});
 	exports.arrayOfTodos = exports.todo = undefined;
 
-	var _normalizr = __webpack_require__(35);
+	var _normalizr = __webpack_require__(34);
 
 	var todo = exports.todo = new _normalizr.Schema('todos');
 	var arrayOfTodos = exports.arrayOfTodos = (0, _normalizr.arrayOf)(todo);
 
 /***/ },
-/* 37 */
+/* 36 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1758,15 +1724,15 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _todoAppReducer = __webpack_require__(31);
+	var _todoAppReducer = __webpack_require__(30);
 
 	var _actions = __webpack_require__(27);
 
-	var _FetchError = __webpack_require__(38);
+	var _FetchError = __webpack_require__(37);
 
 	var _FetchError2 = _interopRequireDefault(_FetchError);
 
-	var _reactRedux = __webpack_require__(39);
+	var _reactRedux = __webpack_require__(38);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1945,7 +1911,7 @@
 	exports.default = VisibleTodoList;
 
 /***/ },
-/* 38 */
+/* 37 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1982,13 +1948,13 @@
 	exports.default = FetchError;
 
 /***/ },
-/* 39 */
+/* 38 */
 /***/ function(module, exports) {
 
 	module.exports = require("react-redux");
 
 /***/ },
-/* 40 */
+/* 39 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2035,7 +2001,7 @@
 	exports.default = AddTodo;
 
 /***/ },
-/* 41 */
+/* 40 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2044,13 +2010,13 @@
 	  value: true
 	});
 
-	var _todoAppReducer = __webpack_require__(31);
+	var _todoAppReducer = __webpack_require__(30);
 
 	var _todoAppReducer2 = _interopRequireDefault(_todoAppReducer);
 
 	var _redux = __webpack_require__(23);
 
-	var _localStorage = __webpack_require__(42);
+	var _localStorage = __webpack_require__(41);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -2125,7 +2091,7 @@
 	exports.default = configureStore;
 
 /***/ },
-/* 42 */
+/* 41 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -2153,18 +2119,18 @@
 	};
 
 /***/ },
-/* 43 */
+/* 42 */
 /***/ function(module, exports) {
 
 	module.exports = require("mongoose");
 
 /***/ },
-/* 44 */
+/* 43 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
-	var mongoose = __webpack_require__(43);
+	var mongoose = __webpack_require__(42);
 	var Schema = mongoose.Schema;
 	//定义一个Schema
 	var TodoSchema = new Schema({
