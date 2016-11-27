@@ -39,3 +39,13 @@ export const toggleTodo = (id) => {
     console.log(err);
   }
 };
+export const removeTodo = (id) => {
+  try {
+    console.log('remove api')
+    return fetch('/db/articles/remove/' + id).then((res) => {
+      return res.json();
+    });
+  } catch (err) {
+    console.log(err);
+  }
+};

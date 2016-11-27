@@ -1,7 +1,6 @@
 import * as api from '../api'
 import {getIsFetching} from '../Reducers/todoAppReducer'
 import { normalize } from 'normalizr'
-import * as schema from './schema'
 
 //使用Action Creater，一个应用的action是固定的，使用creater来产生各个实际的action会标准且方便
 export const addTodo = (text) => (dispatch) =>
@@ -22,6 +21,14 @@ export const toggleTodo = (id) => (dispatch) =>
   api.toggleTodo(id).then(response => {
     dispatch({
       type: 'TOGGLE_TODO_SUCCESS',
+      response,
+    });
+  });
+
+export const removeTodo = (id) => (dispatch) =>
+  api.removeTodo(id).then(response => {
+    dispatch({
+      type: 'REMOVE_TODO_SUCCESS',
       response,
     });
   });

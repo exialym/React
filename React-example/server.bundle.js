@@ -66,7 +66,7 @@
 
 	var _routers2 = _interopRequireDefault(_routers);
 
-	var _mongoose = __webpack_require__(42);
+	var _mongoose = __webpack_require__(41);
 
 	var _mongoose2 = _interopRequireDefault(_mongoose);
 
@@ -80,7 +80,7 @@
 
 	var app = (0, _express2.default)();
 	//导入定义的模型
-	global.dbHandle = __webpack_require__(43);
+	global.dbHandle = __webpack_require__(42);
 	//连接数据库，默认端口号是27017，todolist是自己的数据库名称
 	global.db = _mongoose2.default.connect('mongodb://localhost:27017/todolist');
 	var todo = _mongoose2.default.model('todo');
@@ -143,17 +143,37 @@
 	});
 	app.get('/db/articles/toggle/:id', function (req, res) {
 	    var id = req.params.id;
-	    todo.findById(id, function (err, results) {
+	    todo.findById(id).then(function (res) {
+	        res.completed = !res.completed;
+	        var todoItem = new todo(res);
+	        //然后保存到数据库
+	        return todoItem.save();
+	    }).then(function (result) {
+	        res.json(result);
+	    });
+	    // todo.findById(id,function(err,results){
+	    //   if(err){
+	    //     console.log('error message',err);
+	    //     return;
+	    //   }
+	    //   results.completed = !results.completed;
+	    //   var todoItem=new todo(results);
+	    //   //然后保存到数据库
+	    //   todoItem.save().then((result) => {
+	    //     res.json(result);
+	    //   });
+	    // })
+	});
+	app.get('/db/articles/remove/:id', function (req, res) {
+	    var id = req.params.id;
+	    console.log('remove db');
+	    todo.findByIdAndRemove(id, function (err, result) {
 	        if (err) {
 	            console.log('error message', err);
 	            return;
 	        }
-	        results.completed = !results.completed;
-	        var todoItem = new todo(results);
-	        //然后保存到数据库
-	        todoItem.save().then(function (result) {
-	            res.json(result);
-	        });
+	        console.log(result);
+	        res.json(result);
 	    });
 	});
 	function renderPage(appHtml) {
@@ -1038,7 +1058,7 @@
 
 	var _TodoApp2 = _interopRequireDefault(_TodoApp);
 
-	var _configureStore = __webpack_require__(40);
+	var _configureStore = __webpack_require__(39);
 
 	var _configureStore2 = _interopRequireDefault(_configureStore);
 
@@ -1094,11 +1114,11 @@
 
 	var _Footer2 = _interopRequireDefault(_Footer);
 
-	var _VisibleTodoList = __webpack_require__(36);
+	var _VisibleTodoList = __webpack_require__(35);
 
 	var _VisibleTodoList2 = _interopRequireDefault(_VisibleTodoList);
 
-	var _AddTodo = __webpack_require__(39);
+	var _AddTodo = __webpack_require__(38);
 
 	var _AddTodo2 = _interopRequireDefault(_AddTodo);
 
@@ -1254,7 +1274,7 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.fetchTodos = exports.toggleTodo = exports.setFilter = exports.addTodo = undefined;
+	exports.fetchTodos = exports.removeTodo = exports.toggleTodo = exports.setFilter = exports.addTodo = undefined;
 
 	var _api = __webpack_require__(28);
 
@@ -1263,10 +1283,6 @@
 	var _todoAppReducer = __webpack_require__(30);
 
 	var _normalizr = __webpack_require__(34);
-
-	var _schema = __webpack_require__(35);
-
-	var schema = _interopRequireWildcard(_schema);
 
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -1295,6 +1311,17 @@
 	    return api.toggleTodo(id).then(function (response) {
 	      dispatch({
 	        type: 'TOGGLE_TODO_SUCCESS',
+	        response: response
+	      });
+	    });
+	  };
+	};
+
+	var removeTodo = exports.removeTodo = function removeTodo(id) {
+	  return function (dispatch) {
+	    return api.removeTodo(id).then(function (response) {
+	      dispatch({
+	        type: 'REMOVE_TODO_SUCCESS',
 	        response: response
 	      });
 	    });
@@ -1349,7 +1376,7 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.toggleTodo = exports.addTodo = exports.fetchTodos = undefined;
+	exports.removeTodo = exports.toggleTodo = exports.addTodo = exports.fetchTodos = undefined;
 
 	var _isomorphicFetch = __webpack_require__(29);
 
@@ -1395,6 +1422,16 @@
 	var toggleTodo = exports.toggleTodo = function toggleTodo(id) {
 	  try {
 	    return (0, _isomorphicFetch2.default)('/db/articles/toggle/' + id).then(function (res) {
+	      return res.json();
+	    });
+	  } catch (err) {
+	    console.log(err);
+	  }
+	};
+	var removeTodo = exports.removeTodo = function removeTodo(id) {
+	  try {
+	    console.log('remove api');
+	    return (0, _isomorphicFetch2.default)('/db/articles/remove/' + id).then(function (res) {
 	      return res.json();
 	    });
 	  } catch (err) {
@@ -1521,6 +1558,12 @@
 	        return {
 	          v: _extends({}, state, _defineProperty({}, action.response._id, action.response))
 	        };
+	      case 'REMOVE_TODO_SUCCESS':
+	        var temp = _extends({}, state);
+	        temp[action.response._id] = undefined;
+	        return {
+	          v: temp
+	        };
 	      default:
 	        return {
 	          v: state
@@ -1550,6 +1593,10 @@
 	          });
 	        }
 	        return state;
+	      case 'REMOVE_TODO_SUCCESS':
+	        return state.filter(function (id) {
+	          return id != action.response._id;
+	        });
 	      default:
 	        return state;
 	    }
@@ -1699,22 +1746,6 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.arrayOfTodos = exports.todo = undefined;
-
-	var _normalizr = __webpack_require__(34);
-
-	var todo = exports.todo = new _normalizr.Schema('todos');
-	var arrayOfTodos = exports.arrayOfTodos = (0, _normalizr.arrayOf)(todo);
-
-/***/ },
-/* 36 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -1728,11 +1759,11 @@
 
 	var _actions = __webpack_require__(27);
 
-	var _FetchError = __webpack_require__(37);
+	var _FetchError = __webpack_require__(36);
 
 	var _FetchError2 = _interopRequireDefault(_FetchError);
 
-	var _reactRedux = __webpack_require__(38);
+	var _reactRedux = __webpack_require__(37);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1746,18 +1777,28 @@
 	var Todo = function Todo(_ref) {
 	  var onClick = _ref.onClick,
 	      completed = _ref.completed,
-	      text = _ref.text;
+	      text = _ref.text,
+	      buttonClick = _ref.buttonClick;
 	  return _react2.default.createElement(
 	    'li',
-	    { onClick: onClick,
-	      style: { textDecoration: completed ? 'line-through' : 'none' } },
-	    text
+	    { style: { textDecoration: completed ? 'line-through' : 'none' } },
+	    _react2.default.createElement(
+	      'button',
+	      { onClick: buttonClick },
+	      'Remove'
+	    ),
+	    _react2.default.createElement(
+	      'span',
+	      { onClick: onClick },
+	      text
+	    )
 	  );
 	};
 	//TodoList子组件
 	var TodoList = function TodoList(_ref2) {
 	  var todos = _ref2.todos,
-	      onTodoClick = _ref2.onTodoClick;
+	      onTodoClick = _ref2.onTodoClick,
+	      removeClick = _ref2.removeClick;
 	  return _react2.default.createElement(
 	    'ol',
 	    null,
@@ -1767,6 +1808,9 @@
 	      }, todo, {
 	        onClick: function onClick() {
 	          return onTodoClick(todo._id);
+	        },
+	        buttonClick: function buttonClick() {
+	          return removeClick(todo._id);
 	        }
 	      }));
 	    })
@@ -1824,6 +1868,9 @@
 	//返回一个对象，该对象的每个键值对都是一个映射，定义了 UI 组件的参数怎样发出 Action。
 	var mapDispatchToProps = function mapDispatchToProps(dispatch, ownProps) {
 	  return {
+	    removeClick: function removeClick(id) {
+	      dispatch((0, _actions.removeTodo)(id));
+	    },
 	    onTodoClick: function onTodoClick(id) {
 	      dispatch((0, _actions.toggleTodo)(id));
 	    },
@@ -1836,6 +1883,9 @@
 	//它的每个键名也是对应 UI 组件的同名参数，键值应该是一个函数，会被当作 Action creator
 	//返回的 Action 会由 Redux 自动发出
 	mapDispatchToProps = {
+	  removeClick: function removeClick(id) {
+	    return (0, _actions.removeTodo)(id);
+	  },
 	  onTodoClick: function onTodoClick(id) {
 	    return (0, _actions.toggleTodo)(id);
 	  },
@@ -1911,7 +1961,7 @@
 	exports.default = VisibleTodoList;
 
 /***/ },
-/* 37 */
+/* 36 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1948,13 +1998,13 @@
 	exports.default = FetchError;
 
 /***/ },
-/* 38 */
+/* 37 */
 /***/ function(module, exports) {
 
 	module.exports = require("react-redux");
 
 /***/ },
-/* 39 */
+/* 38 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2001,7 +2051,7 @@
 	exports.default = AddTodo;
 
 /***/ },
-/* 40 */
+/* 39 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2016,7 +2066,7 @@
 
 	var _redux = __webpack_require__(23);
 
-	var _localStorage = __webpack_require__(41);
+	var _localStorage = __webpack_require__(40);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -2091,7 +2141,7 @@
 	exports.default = configureStore;
 
 /***/ },
-/* 41 */
+/* 40 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -2119,18 +2169,18 @@
 	};
 
 /***/ },
-/* 42 */
+/* 41 */
 /***/ function(module, exports) {
 
 	module.exports = require("mongoose");
 
 /***/ },
-/* 43 */
+/* 42 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
-	var mongoose = __webpack_require__(42);
+	var mongoose = __webpack_require__(41);
 	var Schema = mongoose.Schema;
 	//定义一个Schema
 	var TodoSchema = new Schema({

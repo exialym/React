@@ -1,22 +1,24 @@
 import React ,{Component}from 'react'
 import {getVisibleTodos, getIsFetching, getErrorMessage} from '../Reducers/todoAppReducer'
-import {toggleTodo, fetchTodos} from '../actions'
+import {toggleTodo, fetchTodos, removeTodo} from '../actions'
 import FetchError from './FetchError'
 //Todo项子组件
-const Todo = ({onClick,completed,text})=>(
-  <li onClick={onClick}
-      style={{textDecoration: completed ? 'line-through' : 'none'}}>
-    {text}
+const Todo = ({onClick,completed,text,buttonClick})=>(
+  <li style={{textDecoration: completed ? 'line-through' : 'none'}}>
+    <button onClick={buttonClick}>Remove</button>
+    <span onClick={onClick}>{text}</span>
+
   </li>
 );
 //TodoList子组件
-const TodoList = ({todos, onTodoClick}) => (
+const TodoList = ({todos, onTodoClick,removeClick}) => (
   <ol>
     {todos.map(todo =>
       <Todo
         key={todo._id}
         {...todo}
         onClick={() => onTodoClick(todo._id)}
+        buttonClick = {() => removeClick(todo._id)}
       />
     )}
   </ol>
@@ -70,6 +72,9 @@ const mapStateToProps = (state,ownProps) => ({
 //如果mapDispatchToProps是一个函数，会得到dispatch和ownProps（容器组件的props对象）两个参数
 //返回一个对象，该对象的每个键值对都是一个映射，定义了 UI 组件的参数怎样发出 Action。
 var mapDispatchToProps = (dispatch,ownProps) => ({
+  removeClick(id) {
+    dispatch(removeTodo(id));
+  },
   onTodoClick(id) {
     dispatch(toggleTodo(id));
   },
@@ -81,6 +86,9 @@ var mapDispatchToProps = (dispatch,ownProps) => ({
 //它的每个键名也是对应 UI 组件的同名参数，键值应该是一个函数，会被当作 Action creator
 //返回的 Action 会由 Redux 自动发出
 mapDispatchToProps = {
+  removeClick: (id) => {
+    return removeTodo(id);
+  },
   onTodoClick: (id) => {
     return toggleTodo(id);
   },

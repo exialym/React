@@ -64,29 +64,50 @@ app.get('/db/articles/add/:text',function(req,res){
     var text = req.params.text
     //可以使用model创建一个实体
     var todoItem=new todo({
-        text:text,
-        completed:false
+      text:text,
+      completed:false
     });
-    //然后保存到数据库
-    todoItem.save().then((result) => {
-        res.json(result);
-    });
-});
-app.get('/db/articles/toggle/:id',function(req,res){
-  var id = req.params.id;
-  todo.findById(id,function(err,results){
-    if(err){
-      console.log('error message',err);
-      return;
-    }
-    results.completed = !results.completed;
-    var todoItem=new todo(results);
     //然后保存到数据库
     todoItem.save().then((result) => {
       res.json(result);
     });
+});
+app.get('/db/articles/toggle/:id',function(req,res){
+  var id = req.params.id;
+  todo.findById(id)
+    .then((res) => {
+      res.completed = !res.completed;
+      var todoItem=new todo(res);
+      //然后保存到数据库
+      return todoItem.save()
+    })
+    .then((result) => {
+      res.json(result);
+    });
+  // todo.findById(id,function(err,results){
+  //   if(err){
+  //     console.log('error message',err);
+  //     return;
+  //   }
+  //   results.completed = !results.completed;
+  //   var todoItem=new todo(results);
+  //   //然后保存到数据库
+  //   todoItem.save().then((result) => {
+  //     res.json(result);
+  //   });
+  // })
+});
+app.get('/db/articles/remove/:id',function(req,res){
+  var id = req.params.id;
+  console.log('remove db');
+  todo.findByIdAndRemove(id,function(err,result){
+    if(err){
+      console.log('error message',err);
+      return;
+    }
+    console.log(result);
+    res.json(result);
   })
-
 });
 function renderPage(appHtml) {
     return `

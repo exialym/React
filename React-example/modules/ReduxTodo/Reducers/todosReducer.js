@@ -20,6 +20,10 @@ const byId = (state = {},action) => {
         ...state,
         [action.response._id]: action.response,
       };
+    case 'REMOVE_TODO_SUCCESS':
+      let temp = {...state};
+      temp[action.response._id] = undefined;
+      return temp;
     default:
       return state;
   }
@@ -41,6 +45,8 @@ const crestIdListWithFilter = (filter) => {
           return state.filter(id => id != action.response._id);
         }
         return state;
+      case 'REMOVE_TODO_SUCCESS':
+        return state.filter(id => id != action.response._id);
       default:
         return state;
     }

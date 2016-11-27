@@ -61,14 +61,24 @@
           color: red; }
         #main .content .middle .todoList ul li.done {
           color: green; }
-      #main .content .middle .reduxTodo li {
-        cursor: pointer; }
       #main .content .middle .reduxTodo p {
         margin-top: 1em; }
       #main .content .middle .reduxTodo a {
         text-decoration: none; }
       #main .content .middle .reduxTodo span {
-        color: green; }
+        color: green;
+        cursor: pointer; }
+      #main .content .middle .reduxTodo li span {
+        color: black;
+        margin-left: 0.5em; }
+      #main .content .middle .reduxTodo li button {
+        margin: 0.5em 0;
+        color: #666;
+        font-size: 12px;
+        font-weight: 400;
+        cursor: pointer;
+        padding: 0.4em;
+        border-radius: 5px; }
 
 .active {
   color: green; }

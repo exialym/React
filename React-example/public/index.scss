@@ -80,9 +80,6 @@
         }
       }
       .reduxTodo{
-        li{
-          cursor: pointer;
-        }
         p{
           margin-top: 1em;
         }
@@ -91,6 +88,22 @@
         }
         span{
           color: green;
+          cursor: pointer;
+        }
+        li{
+          span{
+            color:black;
+            margin-left:0.5em;
+          }
+          button{
+            margin: 0.5em 0;
+            color: #666;
+            font-size: 12px;
+            font-weight: 400;
+            cursor: pointer;
+            padding: 0.4em;
+            border-radius: 5px;
+          }
         }
       }
     }
