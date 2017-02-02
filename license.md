@@ -1,17 +1,3 @@
-# React
-
-### About
-This is a example of simple use of React and Redux. You can download and try it.
-The real project is in React-example. I use Webpack to build it.
-You need to run 'npm install' and 'npm run build', then run 'npm run start:prod' then you can go to http://localhost:8080/www/
-If you want to try ReduxTodo, Mongodb is required, you can see server.js and find out how to config your db.
-
-### About Permission
-
-The project is open-sourced under MIT license.
-
-
-
 ## License
 
 The MIT License (MIT)
