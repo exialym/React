@@ -1,0 +1,114 @@
+*{
+  margin:0;
+  box-sizing: border-box;
+  font-family: 'Monaco';
+}
+#main{
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  header,footer{
+    flex: 0 0 0%;
+    padding:1em;
+    font: normal 30px "Monaco";
+    text-align: center;
+    background-color: #00539f;
+    color: #fff;
+    background-image: url(img/blueprint.png),
+        linear-gradient(to right,#00539f 50%, #005990 100%);
+
+  }
+  footer{
+    font-size: 12px;
+    background: #444444;
+    color: #fff;
+  }
+  .content{
+    flex:1;
+    display: flex;
+    .nav{
+      flex: 0 0 0%;
+      border-right: 1px dashed #666;
+      ul{
+        width:150px;
+        list-style: none;
+        padding:1em;
+        li{
+          padding:0.5em;
+        }
+        a{
+          text-decoration: none;
+          color:#666;
+
+          font-family: 'Open Sans';
+        }
+        a.active{
+          color:#00539f;
+        }
+      }
+    }
+    .middle{
+      flex:1;
+      padding: 1em;
+      overflow: auto;
+      button,input{
+        border: 1px solid hsla(31,15%,50%,.25);
+        padding: .5em .75em;
+        font: inherit;
+      }
+      button{
+        margin: 10px 20px 10px 0;
+        background-color: hsla(31,15%,50%,.1);
+        color: #666;
+        font: inherit;
+        font-weight: 400;
+        cursor: pointer;
+      }
+      .todoList{
+        ul{
+          list-style: none;
+          padding:0;
+          li{
+            margin:0.5em;
+          }
+          li.undone{
+            color:red;
+          }
+          li.done{
+            color:green;
+          }
+        }
+      }
+      .reduxTodo{
+        p{
+          margin-top: 1em;
+        }
+        a{
+          text-decoration: none;
+        }
+        span{
+          color: green;
+          cursor: pointer;
+        }
+        li{
+          span{
+            color:black;
+            margin-left:0.5em;
+          }
+          button{
+            margin: 0.5em 0;
+            color: #666;
+            font-size: 12px;
+            font-weight: 400;
+            cursor: pointer;
+            padding: 0.4em;
+            border-radius: 5px;
+          }
+        }
+      }
+    }
+  }
+}
+.active{
+  color:green;
+}
